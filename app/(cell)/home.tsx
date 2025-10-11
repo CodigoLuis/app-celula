@@ -25,7 +25,7 @@ const IndicadorePorMes = () => {
     // { month: 'May', count: 6 },
     // { month: 'Jun', count: 8 },
   ]);
-  
+
   const [DataWeek, setDataWeek] = useState<WeekData[]>([
     { id: 1, month: 'Ene', week: 1, count: 10 },
     { id: 2, month: 'Ene', week: 2, count: 12 },
@@ -86,7 +86,7 @@ const IndicadorePorMes = () => {
     <View style={styles.container}>
       {/* Gráfico de líneas */}
       <View style={styles.chartContainer}>
-        <Text style={styles.chartTitle}>Reuniones por mes</Text>
+        <Text style={styles.chartTitle}>Reuniones por mes hola</Text>
         <LineChart
           data={chartData}
           width={Dimensions.get('window').width - 40}
@@ -112,7 +112,7 @@ const IndicadorePorMes = () => {
         <Text style={styles.averageLabel}>Promedio mensual</Text>
       </View>
 
-      <Text style={{marginTop: 110, fontSize: 18, fontWeight: '600',}}>Reuniones por semana</Text>
+      <Text style={{ marginTop: 110, fontSize: 18, fontWeight: '600', }}>Reuniones por semana</Text>
 
       {/* Lista de reuniones */}
       <FlatList
@@ -145,10 +145,7 @@ const styles = StyleSheet.create({
     paddingLeft: 15,
     paddingRight: 5,
     marginBottom: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
+    boxShadow: '0px 2px 6px rgba(0, 0, 0, 0.1)',
     elevation: 3,
   },
   chartTitle: {
@@ -170,10 +167,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
+    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
     elevation: 3,
     width: 110,
   },
@@ -196,10 +190,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
+    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
     elevation: 3,
     width: 110,
   },
@@ -221,10 +212,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
+    boxShadow: '0px 2px 2px rgba(0, 0, 0, 0.1)',
     elevation: 2,
   },
   monthText: {

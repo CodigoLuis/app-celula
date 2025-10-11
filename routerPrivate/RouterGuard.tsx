@@ -3,86 +3,88 @@ import { usePathname, useRouter, useSegments } from 'expo-router';
 import React, { useContext, useEffect } from 'react';
 import { ActivityIndicator, Text, View } from 'react-native';
 
-const publicRoutes = ['login', 'register', 'forgot-password'];  // ← CAMBIO: Sin leading slash para normalización
+// Array de grupos privados (agrega más aquí si creas nuevos grupos, ej. '(admin)')
 const privateGroups = ['(user)', '(cell)'];
+
+const publicRoutes = ['index', 'login', 'register', 'forgot-password'];
 
 const RouterGuard = ({ children }: { children: React.ReactNode }) => {
   const { authenticated, isLoading } = useContext(authContext);
   const router = useRouter();
-  const segments = useSegments();
-  const pathname = usePathname();  // Ej. '/login' o 'login'
+  const pathname = usePathname();  // Solo para reactividad en useEffect
+  const segments = useSegments();  // Solo para validaciones (privada/pública)
 
-  // ← NUEVO: Función para normalizar path (remueve leading slash y trailing slash)
-  const normalizePath = (path: string | null): string => {
-    if (!path) return '';
-    return path.replace(/^\/+/, '').replace(/\/+$/, '');  // Ej. '/login/' → 'login', 'login' → 'login'
+  // Función para rutas privadas: Basado SOLO en SEGMENTS (primer segmento es un grupo privado)
+  const isPrivateRoute = (): boolean => {
+    const firstSegment = segments[0];  // string | undefined
+    if (!firstSegment) {
+      // console.log(`→ isPrivateRoute: No first segment (raíz), no privada`);
+      return false;
+    }
+
+    const isGroupPrivate = privateGroups.includes(firstSegment);
+    // console.log(`→ isPrivateRoute: Segments=[${segments.join(', ')}], first='${firstSegment}', groupsMatch=${isGroupPrivate}`);
+    return isGroupPrivate;  // Ej. first='(cell)' → true; cualquier subpágina dentro es privada
   };
 
-  const normalizedPathname = normalizePath(pathname);  // Ej. 'login'
-  const normalizedSegments = segments.join('/').replace(/^\/+/, '');  // Fallback si no usas pathname
+  // Función para rutas públicas: Basado SOLO en SEGMENTS (exactas, subpaths o raíz)
+  const isPublicRoute = (): boolean => {
+    const firstSegment = segments[0];  // string | undefined
 
-  // Función mejorada para rutas privadas
-  const isPrivateRoute = () => {
-    const normPath = normalizedPathname;
-    const isGroupPrivate = privateGroups.some(group => normPath.startsWith(group));  // Ej. 'cell/home' startsWith '(cell)'
-    const isPathPrivate = normPath.startsWith('user/') || normPath.startsWith('cell/');  // Flat paths
-    const result = isGroupPrivate || isPathPrivate;
-    console.log(`→ isPrivateRoute: normPath='${normPath}', groupsMatch=${isGroupPrivate}, pathMatch=${isPathPrivate}, result=${result}`);
+    // Fix para raíz: No firstSegment → 'index' pública
+    if (!firstSegment) {
+      // console.log(`→ isPublicRoute: Raíz detectada como 'index' pública`);
+      return publicRoutes.includes('index');
+    }
+
+    // Chequea si firstSegment es una ruta pública exacta o inicio de subpath
+    const isPublicStart = publicRoutes.includes(firstSegment);
+    const isExactPublic = segments.length === 1 && isPublicStart;  // Ej. ['login'] → true
+    const isSubPublic = segments.length > 1 && isPublicStart;  // Ej. ['login', 'reset'] → true (subpath de login)
+
+    const result = isExactPublic || isSubPublic;
+    // console.log(`→ isPublicRoute: Segments=[${segments.join(', ')}], first='${firstSegment}', isPublicStart=${isPublicStart}, result=${result}`);
     return result;
   };
 
-  // Función mejorada para rutas públicas (más flexible)
-  const isPublicRoute = () => {
-    const normPath = normalizedPathname;
-    const matches = publicRoutes.some(route => 
-      normPath === route ||  // Exacto: 'login' === 'login'
-      normPath.startsWith(route + '/') ||  // Subpath: 'login/reset' startsWith 'login/'
-      normPath.includes(route)  // Fallback para casos raros (ej. '(auth)/login' includes 'login')
-    );
-    console.log(`→ isPublicRoute: normPath='${normPath}', matches=[${publicRoutes.map(r => normPath.includes(r)).join(', ')}], result=${matches}`);
-    return matches;
-  };
-
   useEffect(() => {
-    // Logs detallados para debug (quita después de fix)
-    console.log('=== DEBUG ROUTER GUARD ===');
-    console.log('Raw Pathname:', pathname);  // Valor crudo de usePathname
-    console.log('Normalized Pathname:', normalizedPathname);  // Después de normalizar
-    console.log('Segments:', segments);  // Array
-    console.log('Normalized Segments:', normalizedSegments);
-    console.log('Authenticated:', authenticated);
-    console.log('Is Loading:', isLoading);
+    // Logs para debug (remueve en producción)
+    // console.log('=== DEBUG ROUTER GUARD ===');
+    // console.log('Raw Pathname:', pathname);
+    // console.log('Segments:', segments);
+    // console.log('Authenticated:', authenticated);
+    // console.log('Is Loading:', isLoading);
 
-    // Si loading o null, no redirigir
+    // Si loading o null, no redirigir (muestra loader)
     if (isLoading || authenticated === null) {
-      console.log('→ Saliendo por loading/null');
+      // console.log('→ Saliendo por loading/null');
       return;
     }
 
     const privateRoute = isPrivateRoute();
     const publicRoute = isPublicRoute();
 
-    console.log('Final: Is Private?', privateRoute, 'Is Public?', publicRoute);
+    // console.log('Final: Is Private?', privateRoute, 'Is Public?', publicRoute);
 
-    // Caso 1: NO autenticado en ruta privada → A login
+    // Caso 1: NO autenticado en ruta privada → Redirige a raíz pública
     if (authenticated === false && privateRoute) {
-      console.log('→ Redirigiendo a /login (no auth en privada)');
-      router.replace('/login');
+      // console.log('→ Redirigiendo a / (no auth en privada)');
+      router.replace('/');
       return;
     }
 
-    // Caso 2: Autenticado en ruta pública → A home (¡TU ISSUE!)
+    // Caso 2: Autenticado en ruta pública → Redirige a home del grupo (ajusta por rol si necesitas)
     if (authenticated === true && publicRoute) {
-      console.log('→ Redirigiendo a /(cell)/home (auth en pública) - ¡FIX!');
-      router.replace('/(cell)/home');
+      // console.log('→ Redirigiendo a /(cell)/home (auth en pública)');
+      router.replace('/(cell)/home');  // Cambia a lógica por rol: ej. '/(user)/home2' si userRole === 'user'
       return;
     }
 
-    // Caso 3: Ruta correcta o neutra → No redirigir
-    console.log('→ Ruta OK o neutra, renderizando children');
-  }, [authenticated, pathname, segments, router, isLoading]);  // pathname y segments para reactividad
+    // Caso 3: Ruta correcta o neutra (no pública ni privada) → No redirigir
+    // console.log('→ Ruta OK o neutra, renderizando children');
+  }, [authenticated, pathname, router, isLoading]);  // Solo pathname para reactividad (segments se actualiza con él)
 
-  // Loader
+  // Loader mientras verifica auth
   if (isLoading || authenticated === null) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#fff' }}>

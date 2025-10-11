@@ -16,7 +16,7 @@ const authContext = createContext<AuthContextProps>({
   authenticated: null,
   user: null,
   type: null,
-  isLoading: true,  // ← NUEVO: Default true
+  isLoading: true,  
   logIn: async () => false,
   authenticatedUser: async () => {},
   signOut: async () => {},

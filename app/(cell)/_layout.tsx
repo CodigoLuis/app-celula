@@ -32,29 +32,29 @@ export default function TabsLayout() {
                     title: "Home",
                     headerTitleAlign: 'center',
                 }}
-                // name="settings"  // Coincide con settings.tsx
-                // options={{
-                //     title: 'Ajustes',
-                //     tabBarIcon: ({ color, size }) => (
-                //         <Ionicons name="settings" color={color} size={size} />
-                //     ),
-                //     // Puedes agregar: presentation: 'modal' para abrir como modal
-                // }
-                    />
-                <Drawer.Screen
-                    name="registerUser"
-                    options={{
-                        title: "Registro de usuario",
-                        headerTitleAlign: 'center',
-                    }}
-                />
-                <Drawer.Screen
-                    name="menu"
-                    options={{
-                        title: "Menu",
-                        headerTitleAlign: 'center',
-                    }}
-                />
-            </Drawer>
+            // name="settings"  // Coincide con settings.tsx
+            // options={{
+            //     title: 'Ajustes',
+            //     tabBarIcon: ({ color, size }) => (
+            //         <Ionicons name="settings" color={color} size={size} />
+            //     ),
+            //     // Puedes agregar: presentation: 'modal' para abrir como modal
+            // }
+            />
+            <Drawer.Screen
+                name="registerUser1"
+                options={{
+                    title: "Registro de usuario",
+                    headerTitleAlign: 'center',
+                }}
+            />
+            <Drawer.Screen
+                name="menu1"
+                options={{
+                    title: "Menu",
+                    headerTitleAlign: 'center',
+                }}
+            />
+        </Drawer>
     );
 }

@@ -1,10 +1,12 @@
-import { useRouter } from "expo-router";
+import authContext from '@/contexts/auth/authContext';
+// import { useRouter } from "expo-router";
 import { Drawer } from 'expo-router/drawer';
-import React from 'react';
+import React, { useContext } from 'react';
 import { Pressable, Text } from 'react-native';
 
 export default function TabsLayout() {
-    const router = useRouter();
+    // const router = useRouter();
+    const { signOut } = useContext(authContext);
 
     return (
         <Drawer
@@ -18,32 +20,32 @@ export default function TabsLayout() {
                 drawerInactiveTintColor: "#666666",
                 headerRight: () => (
                     <Pressable
-                        onPress={() => router.replace("/")}
+                        onPress={() => signOut()}
                         style={{ marginRight: 15, padding: 8 }}
                     >
-                        <Text style={{ color: 'blue' }}>Login</Text>
+                        <Text style={{ color: 'blue' }}>Cerrar sesion</Text>
                     </Pressable>
                 ),
             }}
         >
             <Drawer.Screen
-                name="home"
+                name="home2"
                 options={{
-                    title: "Home",
+                    title: "Home 2",
+                    headerTitleAlign: 'center',
+                }}
+            />
+            <Drawer.Screen
+                name="registerPerson"
+                options={{
+                    title: "Registrar persona",
                     headerTitleAlign: 'center',
                 }}
             />
             <Drawer.Screen
                 name="registerUser"
                 options={{
-                    title: "Registro de usuario",
-                    headerTitleAlign: 'center',
-                }}
-            />
-            <Drawer.Screen
-                name="menu"
-                options={{
-                    title: "Menu",
+                    title: "Registrar usuario",
                     headerTitleAlign: 'center',
                 }}
             />

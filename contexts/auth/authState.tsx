@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from "expo-router";
-import React, { ReactNode, useEffect, useReducer, useState } from 'react'; // ← Agregado useEffect, useState
+import React, { ReactNode, useEffect, useReducer, useState } from 'react';
 import Toast from 'react-native-toast-message';
 
 import authContext from '@/contexts/auth/authContext';
@@ -9,7 +9,7 @@ import authReducer from '@/contexts/auth/authReducer';
 import clientAxios from '@/conf/axios/clientAxios';
 import tokenAuth from '@/conf/axios/tokenAuth';
 
-interface AuthStateProps {
+interface StateProps {
   children: ReactNode;
 }
 
@@ -26,7 +26,7 @@ const initialState = {
   isLoading: true,  // ← NUEVO: true al inicio (verificación pendiente)
 };
 
-const AuthState: React.FC<AuthStateProps> = ({ children }) => {
+const AuthState: React.FC<StateProps> = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
   const [hasChecked, setHasChecked] = useState(false);  // ← NUEVO: Flag para verificación única
   const router = useRouter();
@@ -55,21 +55,21 @@ const AuthState: React.FC<AuthStateProps> = ({ children }) => {
   };
 
   const authenticatedUser = async () => {
-    if (hasChecked) return;  // ← NUEVO: Evita re-llamadas
+    if (hasChecked) return;  
     try {
       const tokenString = await AsyncStorage.getItem('token');
       
       if (tokenString) {
         const token = JSON.parse(tokenString);
-        tokenAuth(token);  // ← Fix: token es string directo (no .token, ya que guardas solo access_token)
+        tokenAuth(token);  
       } else {
-        // No token: Falla rápido
+        
         dispatch({ type: 'ERROR_GET_USER' });
         return;
       }
 
       const { data } = await clientAxios.get('/auth/authentication');
-      dispatch({ type: 'GET_USER', payload: data });  // ← Nota: data ya es { firstName, ... } (sin .data extra)
+      dispatch({ type: 'GET_USER', payload: data });  
     
     } catch (error: any) {
       await AsyncStorage.multiRemove(['token']);
@@ -78,8 +78,7 @@ const AuthState: React.FC<AuthStateProps> = ({ children }) => {
       dispatch({ type: 'ERROR_GET_USER' });
       if (!error?.response) showToast('Sin conexión');
     } finally {
-      setHasChecked(true);  // ← NUEVO: Marca como chequeado
-      // Nota: isLoading se setea a false en reducer (en dispatches)
+      setHasChecked(true);  
     }
   };
 
@@ -92,7 +91,7 @@ const AuthState: React.FC<AuthStateProps> = ({ children }) => {
     await AsyncStorage.multiRemove(['token']);
     dispatch({ type: 'CERRAR_SESION' });
     showToast('Cerrando sesión', 'info');
-    router.replace("/login");
+    router.replace("/");
   };
 
   return (
@@ -102,9 +101,9 @@ const AuthState: React.FC<AuthStateProps> = ({ children }) => {
         authenticated: state.authenticated,
         user: state.user,
         type: state.type,
-        isLoading: state.isLoading,  // ← NUEVO: Expone loading
+        isLoading: state.isLoading,  
         logIn,
-        authenticatedUser,  // Sigue expuesto, pero no se usará en guard
+        authenticatedUser,  
         signOut,
       }}
     >

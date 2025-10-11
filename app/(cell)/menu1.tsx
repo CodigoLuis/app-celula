@@ -19,7 +19,7 @@ export default function CustomDropdown() {
     return (
         <View style={styles.container}>
             <TouchableOpacity style={styles.button} onPress={() => setVisible(true)}>
-                <Text>{selected}---</Text>
+                <Text>{selected} hola </Text>
             </TouchableOpacity>
 
             <Modal transparent visible={visible} animationType="slide">

@@ -10,7 +10,7 @@ export default function HomeScreen() {
     >
       <View style={styles.bandaSuperior} >
 
-        <Text style={styles.colorText} >Territorio negro</Text>
+        <Text style={styles.colorText} >Territorio negro ssssssss</Text>
 
       </View>
 
@@ -112,10 +112,7 @@ const styles = StyleSheet.create({
     padding: 15,
     marginLeft: 10,
     borderRadius: 7,
-    shadowColor: "#000",
-    shadowOffset: { width: 1, height: 4 },
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
+    boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.05)',
     backgroundColor: '#005AAC',
   },
 
@@ -125,10 +122,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     borderRadius: 18,
     backgroundColor: "#f7f2fa",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 8,
+    boxShadow: '0px 2px 6px rgba(0, 0, 0, 0.05)',
     elevation: 4,
   },
 

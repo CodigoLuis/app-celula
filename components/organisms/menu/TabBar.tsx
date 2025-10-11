@@ -66,10 +66,7 @@ const styles = StyleSheet.create({
     borderTopWidth: 0,  // Quité el borde para un diseño más limpio
     // Sombras suaves y modernas (compatible con iOS y Android)
     elevation: 12,  // Android: sombra más pronunciada pero suave
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: -4 },
-    shadowOpacity: 0.08,  // Opacidad baja para sutileza
-    shadowRadius: 8,
+    boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.08)',
   },
   tabButton: {
     flex: 1,

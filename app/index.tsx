@@ -1,4 +1,4 @@
-import InputLabel from '@/components/InputLabel';
+import InputWithLabel from '@/components/molecules/inputWithLabel';
 import authContext from '@/contexts/auth/authContext';
 import { useRouter } from "expo-router";
 import React, { useContext, useState } from 'react';
@@ -54,14 +54,13 @@ export default function LoginScreen() {
         <Text style={styles.titleLogin}>
           Inicio de sesión
         </Text>
-        
+
         <Text style={{ marginBottom: 20, }}>
           Conéctate con tu territorio.
         </Text>
 
-        <InputLabel
+        <InputWithLabel
           labelText={"Usuario"}
-          password={false}
           value={inputUsername}
           setValue={setInputUsername}
           styleContainer={{ marginVertical: 8, marginBottom: 10, width: "80%", }}
@@ -69,7 +68,7 @@ export default function LoginScreen() {
           styleInput={{ borderWidth: 1, borderColor: '#ccc', borderRadius: 8, padding: 12, fontSize: 16, }}
         />
 
-        <InputLabel
+        <InputWithLabel
           labelText={"Contraseña"}
           password={true}
           value={inputPassword}
@@ -78,7 +77,7 @@ export default function LoginScreen() {
           styleLabel={{ fontSize: 16, marginBottom: 4, fontWeight: 'bold', }}
           styleInput={{ borderWidth: 1, borderColor: '#ccc', borderRadius: 8, padding: 12, fontSize: 16, }}
         />
-       
+
         {error && <Text style={{ color: '#FFCDD2' }} >{error}</Text>}
 
         <View
