@@ -29,9 +29,9 @@ export default function TabsLayout() {
             }}
         >
             <Drawer.Screen
-                name="home2"
+                name="viewUserDataList"
                 options={{
-                    title: "Home 2",
+                    title: "Lista de Usuarios",
                     headerTitleAlign: 'center',
                 }}
             />

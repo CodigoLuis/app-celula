@@ -31,6 +31,13 @@ const reducer = (state: State = initialState, action: Action): State => {
         error: null, 
       };
     }
+    case 'USER_DATA_CLEANSING': {
+      return {
+        ...state,
+        person: { data: {} as dataThePerson, existing: false }, 
+        error: null,
+      };
+    }
     case 'ERROR_PERSON': {
       return {
         ...state,

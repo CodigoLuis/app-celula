@@ -1,13 +1,13 @@
 import InputWithLabel from '@/components/molecules/inputWithLabel';
+import SelectWithLabel from '@/components/molecules/selectWithLabel';
 import optionsContext from '@/contexts/options/optionsContext';
 import personContext from '@/contexts/person/personContext';
-import { Picker } from '@react-native-picker/picker';
+import userContext from '@/contexts/user/userContext';
 import React, { useContext, useEffect, useState } from 'react';
 import {
     ActivityIndicator,
     Button,
     Modal,
-    Platform,
     ScrollView,
     StyleSheet,
     Text,
@@ -15,7 +15,7 @@ import {
 } from 'react-native';
 import Toast from 'react-native-toast-message';
 
-// Interfaces para estados 
+// Interfaces para estados  second state field
 interface FieldState {
     value: string;
     isValid: boolean;
@@ -74,8 +74,10 @@ export default function RegisterUserScreen() {
     const [userType, setUserType] = useState<FieldState>({ value: '', isValid: false });
 
     const [existingID, setExistingID] = useState<boolean>(false);
+    const [existingName, setExistingName] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    const { person, existingPerson } = useContext(personContext);
+    const { person, existingPerson, userDataCleansing } = useContext(personContext);
+    const { existingNameUser, registerUser } = useContext(userContext);
     const { typesUsers, territories, optionsUserType, optionsTerritories } = useContext(optionsContext);
 
     useEffect(() => {
@@ -85,9 +87,14 @@ export default function RegisterUserScreen() {
 
     // ---- Inicio ------ Wrappers para setters (actualizan value y calculan isValid en tiempo real)
     // ---------------------------------------------------------------------------------------------------
-    const setNameUser = (value: string) => {
+    const setNameUser = async (value: string) => {
         const newValue = value;
         setUserName({ value: newValue, isValid: validateUserName(newValue) });
+        if (validateUserName(newValue) === true) {
+            const isValid = await existingNameUser(newValue)
+            if (isValid === false) setExistingName(false);
+            else setExistingName(true);
+        }
         return;
     };
 
@@ -108,10 +115,41 @@ export default function RegisterUserScreen() {
         return;
     };
 
+    const arrayConstructorTerritories = () => {
+
+        let dataArray: { title: string; id: string }[] = [];
+
+        for (const element of territories.data) {
+            const value1 = `${element.name} - ${element.male === true ? "Hombres" : "Mujeres"}`;
+            const value2 = element.id;
+
+            dataArray.push({
+                "title": value1,
+                "id": value2
+            })
+        }
+
+        return dataArray;
+    }
+
     const changeTypeUser = (value: string) => {
         setUserType({ value, isValid: validateBoolean(value) });
         return;
     };
+
+    const arrayConstructorTypeUser = () => {
+
+        let dataArray: { title: string; id: string }[] = [];
+
+        for (const element of typesUsers.data) {
+            dataArray.push({
+                "title": element.title,
+                "id": element.id
+            })
+        }
+
+        return dataArray;
+    }
 
     const setIdNumber = (value: string) => {
 
@@ -124,13 +162,15 @@ export default function RegisterUserScreen() {
 
         setIdNumberState({ value: newValue, isValid: validateIdNumber(newValue) });
         validatorIdNumber(newValue, validateIdNumber(newValue));
+        if (validateIdNumber(newValue) && person?.data) {
+            setExistingID(false); // ******* revisar********************************************************************************
+            userDataCleansing();
+        }
         return;
     };
 
-
     // ---- Fin ------ Wrappers para setters
     // ------------------------------------------------------------------------------------------------------
-
 
     // Función para obtener estilo dinámico del input (borde verde/rojo)
     // ------------------------------------------------------------------------------------------------------
@@ -162,38 +202,60 @@ export default function RegisterUserScreen() {
     const validateAndSubmit = async () => {
 
         if (!idNumber.isValid) {
-            showToast('Error, La cédula debe tener formato válido (ej. V-10.204.305)');
+            showToast('Error, la cédula debe tener formato válido (ej. V-10.204.305)');
             return;
         }
         if (existingID === false) {
             showToast(`Error, es necesario que la cédula " ${idNumber.value} " esté registrada`);
             return;
         }
+        if (person && person.data.isUser === true) {
+            showToast(`Error, la persona ya tiene un usuario`);
+            return;
+        }
         if (!userName.isValid) {
-            showToast('Error, Introduzca un nombre de usuario valido');
+            showToast('Error, introduzca un nombre de usuario valido');
             return;
         }
         if (!Password.isValid) {
-            showToast('Error, Introduzca una contraseña valida');
+            showToast('Error, introduzca una contraseña valida');
             return;
         }
         if (!repeatPassword.isValid) {
-            showToast('Error, por favor confirme la contraseña');
+            showToast('Error, confirme la contraseña');
             return;
         }
         if (!territorie.isValid) {
-            showToast('Error, Selecciona el territorio');
+            showToast('Error, es necesario que seleccione el territorio');
             return;
         }
         if (!userType.isValid) {
-            showToast('Error, Selecciona el tipo de usuario');
+            showToast('Error, es necesario que seleccione el tipo de usuario');
             return;
         }
 
+        const idPerson = person && person.data.id ? Number(person.data.id) : null;
+
         await setIsLoading(true);
 
+        const result = await registerUser({
+            username: userName.value,
+            password: Password.value,
+            person: idPerson,
+            userType: userType.value,
+            territory: territorie.value,
+        })
 
-
+        if (result === true) {
+            userDataCleansing();
+            setIdNumberState({ value: '', isValid: false });
+            setUserName({ value: '', isValid: false });
+            setPassword({ value: '', isValid: false });
+            setRepeatPassword({ value: '', isValid: false });
+            setTerritorie({ value: '', isValid: false });
+            setUserType({ value: '', isValid: false });
+            setExistingID(false);
+        }
 
         setTimeout(() => {
             setIsLoading(false);
@@ -207,7 +269,6 @@ export default function RegisterUserScreen() {
             <View>
                 <Text style={styles.title}>Usuario</Text>
             </View>
-
 
             {/* Cédula */}
             <InputWithLabel
@@ -227,6 +288,7 @@ export default function RegisterUserScreen() {
             {existingID ? (
                 <View style={styles.card}>
                     <Text style={styles.cardTitle}>Datos de la persona</Text>
+                    {person && person.data.isUser === true ? <Text style={styles.cardTitle2}>La persona ya tiene un usuario</Text> : null}
 
                     <View style={styles.infoRow}>
                         <Text style={styles.labelCard}>Nombre:</Text>
@@ -252,6 +314,7 @@ export default function RegisterUserScreen() {
                 mandatory={true}
             />
             {getErrorMessage(userName, validateUsernameDetailed(userName.value))}
+            {existingName ? <Text style={styles.errorText}>{'Error, el nombre de usuario ya está en uso'}</Text> : null}
 
             {/* contraseña */}
             <InputWithLabel
@@ -262,10 +325,11 @@ export default function RegisterUserScreen() {
                 styleLabel={styles.label}
                 styleInput={getInputStyle(Password)}
                 mandatory={true}
+                password={true}
             />
             {getErrorMessage(Password, validatePasswordDetailed(Password.value))}
 
-            {/* contraseña */}
+            {/* contraseña R*/}
             <InputWithLabel
                 labelText="Repetir contraseña"
                 value={repeatPassword.value}
@@ -274,64 +338,44 @@ export default function RegisterUserScreen() {
                 styleLabel={styles.label}
                 styleInput={getInputStyle(repeatPassword)}
                 mandatory={true}
+                password={true}
             />
             {getErrorMessage(repeatPassword, 'La contraseña no coincide')}
 
-            {/* Territorio  typesUsers, territories */}
-            <View style={styles.fieldContainer}>
-                <Text style={styles.label}>
-                    Territorio
-                    <Text style={styles.requiredAsterisk}>*</Text>
-                </Text>
-                <View style={[
-                    styles.pickerContainer,
+            {/* territories */}
+            <SelectWithLabel
+                labelText={'Territorio'}
+                mandatory={true}
+                theValue={territorie.value}
+                setValue={changeTerritorie}
+                sample={'Territorio'}
+                dataOption={arrayConstructorTerritories()}
+                stylePickerContainer2={
                     {
-                        borderColor: (Boolean(territorie.value) && !territorie.isValid) ? '#e74c3c' : // ← FIJO: Boolean() para condición booleana
+                        borderColor: (Boolean(territorie.value) && !territorie.isValid) ? '#e74c3c' :
                             territorie.isValid ? '#4CAF50' : '#e0e0e0'
                     }
-                ]}>
-                    <Picker
-                        selectedValue={territorie.value}
-                        onValueChange={(itemValue) => changeTerritorie(itemValue)}  // ← Explícito: itemValue como string
-                        style={styles.picker}
-                        itemStyle={styles.pickerItem}
-                    >
-                        <Picker.Item label="Territorio" value="" />
-                        {territories.data.map((t) => (
-                            <Picker.Item label={`${t.name} - ${t.male === true ? "Hombres" : "Mujeres"}`} value={t.id} />
-                        ))}
-                    </Picker>
-                </View>
-                {getErrorMessage(territorie, 'Selecciona una opción')}
-            </View>
+                }
+            />
+            {getErrorMessage(territorie, 'Selecciona una opción')}
 
             {/* Tipo de usuario */}
-            <View style={styles.fieldContainer}>
-                <Text style={styles.label}>
-                    Tipo de usuario
-                    <Text style={styles.requiredAsterisk}>*</Text>
-                </Text>
-                <View style={[
-                    styles.pickerContainer,
+            <SelectWithLabel
+                labelText={'Tipo de usuario'}
+                mandatory={true}
+                theValue={userType.value}
+                setValue={changeTypeUser}
+                sample={'Tipo de usuario'}
+                dataOption={arrayConstructorTypeUser()}
+                stylePickerContainer2={
                     {
-                        borderColor: (Boolean(userType.value) && !userType.isValid) ? '#e74c3c' : // ← FIJO: Boolean() para condición booleana
+                        borderColor: (Boolean(userType.value) && !userType.isValid) ? '#e74c3c' :
                             userType.isValid ? '#4CAF50' : '#e0e0e0'
                     }
-                ]}>
-                    <Picker
-                        selectedValue={userType.value}
-                        onValueChange={(itemValue) => changeTypeUser(itemValue)}  // ← Explícito: itemValue como string
-                        style={styles.picker}
-                        itemStyle={styles.pickerItem}
-                    >
-                        <Picker.Item label="Tipo de usuario" value="" />
-                        {typesUsers.data.map((t) => (
-                            <Picker.Item label={t.title} value={t.id} />
-                        ))}
-                    </Picker>
-                </View>
-                {getErrorMessage(territorie, 'Selecciona una opción')}
-            </View>
+                }
+            />
+            {getErrorMessage(userType, 'Selecciona una opción')}
+
 
             <View style={styles.buttonContainer}>
                 <Button title="Registrar" onPress={validateAndSubmit} />
@@ -383,9 +427,8 @@ const styles = StyleSheet.create({
         marginTop: 34,
         marginBottom: 20,
     },
-    fieldContainer: {
-        marginVertical: 10,
-    },
+
+
     label: {
         fontSize: 16,
         fontWeight: '600',
@@ -393,48 +436,7 @@ const styles = StyleSheet.create({
         marginBottom: 8,
         letterSpacing: 0.2,
     },
-    requiredAsterisk: {
-        color: '#e74c3c',
-        fontSize: 16,
-        fontWeight: '700',
-        marginLeft: 2,
-    },
-    pickerContainer: {
-        backgroundColor: '#fff',
-        borderWidth: 1,
-        borderColor: '#e0e0e0',
-        borderRadius: 12,
-        paddingHorizontal: 15,
-        paddingVertical: 12,
-        // Sombra sutil 
-        ...Platform.select({
-            ios: {
-                shadowColor: '#000',
-                shadowOffset: { width: 0, height: 1 },
-                shadowOpacity: 0.1,
-                shadowRadius: 2,
-            },
-            android: {
-                elevation: 2,
-            },
-        }),
-    },
-    picker: {
-        flex: 1,
-        height: 44,
-        color: '#333',
-        borderColor: 'rgba(255, 255, 255, 0.02)',
-        fontSize: 16,
-        ...Platform.select({
-            android: { backgroundColor: 'transparent' },
-        }),
-    },
-    pickerItem: {
-        fontSize: 16,
-        color: '#555',
-        backgroundColor: '#fafafa',
-        fontWeight: '500',
-    },
+
     //---------------------------------------------------------------
     //---------------------------------------------------------------
     overlay: {
@@ -469,6 +471,13 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         marginBottom: 15,
         color: '#007AFF',
+    },
+    cardTitle2: {
+        fontSize: 15,
+        fontWeight: 'bold',
+        textAlign: 'center',
+        marginBottom: 10,
+        color: '#d43108ad',
     },
     infoRow: {
         flexDirection: 'row',

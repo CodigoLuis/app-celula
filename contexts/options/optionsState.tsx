@@ -61,8 +61,6 @@ const OptionsState: React.FC<StateProps> = ({ children }) => {
       }
 
       const { data } = await clientAxios.get('/options/user-types');
-      console.log("data------- Tipos usuario")
-      console.log(data)
       dispatch({ type: 'GET_TYPES_USERS', payload: data });
 
       return true;
@@ -90,8 +88,6 @@ const OptionsState: React.FC<StateProps> = ({ children }) => {
       }
 
       const { data } = await clientAxios.get('/options/territories');
-      console.log("data------- territorios")
-      console.log(data)
       dispatch({ type: 'GET_TERRITORIES', payload: data });
 
       return true;

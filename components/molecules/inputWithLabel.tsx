@@ -7,8 +7,8 @@ interface CustomInputProps {
   setValue: (text: string) => void;
   password?: boolean; 
   styleContainer: any;
-  styleLabel: any;
-  styleInput: any;
+  styleLabel?: any;
+  styleInput?: any;
   placeholder?: string;
   mandatory?: boolean;
   keyboardType?: KeyboardTypeOptions;

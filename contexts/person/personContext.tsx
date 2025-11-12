@@ -24,21 +24,25 @@ export interface dataThePerson {
   birthDate: null | string | undefined;
   createdAt: null | string | undefined;
   updatedAt: null | string | undefined;
+  isUser: null | boolean | undefined;
 }
 
 export interface ContextProps {
-  person: { 
-    data: dataThePerson; 
+  person: {
+    data: dataThePerson;
     existing: boolean;
-  } | null;  
+  } | null;
   registerPerson: (data: DataPerson) => Promise<boolean>;
-  existingPerson: (data: string) => Promise<boolean>; 
+  existingPerson: (data: string) => Promise<boolean>;
+  userDataCleansing: () => Promise<boolean>;
 }
 
 const personContext = createContext<ContextProps>({
   person: null,
   registerPerson: async () => false,
   existingPerson: async () => false,
+  userDataCleansing: async () => false,
+
 });
 
 export default personContext;

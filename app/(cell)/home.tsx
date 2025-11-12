@@ -86,7 +86,7 @@ const IndicadorePorMes = () => {
     <View style={styles.container}>
       {/* Gráfico de líneas */}
       <View style={styles.chartContainer}>
-        <Text style={styles.chartTitle}>Reuniones por mes hola</Text>
+        <Text style={styles.chartTitle}>Reuniones por mes -- hola Luis</Text>
         <LineChart
           data={chartData}
           width={Dimensions.get('window').width - 40}

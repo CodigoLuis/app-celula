@@ -38,12 +38,12 @@ const PersonState: React.FC<StateProps> = ({ children }) => {
       }
 
       const { data: result } = await clientAxios.post('/person/register', dataPerson);
-      
+
       // Opcional: Si el registro retorna datos de la persona, actualiza el estado
       // if (result.data) {
       //   dispatch({ type: 'GET_PERSON', payload: result });
       // }
-      
+
       showToast("Registro exitoso", 'info');  // Mejora: Feedback positivo
       return true;
 
@@ -67,11 +67,11 @@ const PersonState: React.FC<StateProps> = ({ children }) => {
       }
 
       const { data: result } = await clientAxios.post('/person/existing', { idNumber });
-      
+      console.log(result)
       // Corregido: Dispatch con estructura completa {data, existing}
       // Asume que result = { data: personObj, existing: bool }
       dispatch({ type: 'GET_PERSON', payload: { data: result.data || {}, existing: result.existing || false } });
-      
+
       return result.existing || false;
 
     } catch (error: any) {
@@ -85,12 +85,18 @@ const PersonState: React.FC<StateProps> = ({ children }) => {
     }
   };
 
+  const userDataCleansing = async (): Promise<boolean> => {
+    dispatch({ type: 'USER_DATA_CLEANSING' });
+    return true;
+  };
+
   return (
     <personContext.Provider
       value={{
-        person: state.person, 
+        person: state.person,
         registerPerson,
         existingPerson,
+        userDataCleansing,
       }}
     >
       {children}

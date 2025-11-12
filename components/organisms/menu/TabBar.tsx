@@ -12,8 +12,11 @@ export default function TabBar({ state, navigation, hideOnRoutes = [] }: CustomT
     return null;
   }
 
+  const contentArray: {}[] = [];
+
   return (
     <View style={styles.container}>
+
       {state.routes.map((route, index) => {
         const isFocused = state.index === index;
         const onPress = () => {
@@ -28,29 +31,38 @@ export default function TabBar({ state, navigation, hideOnRoutes = [] }: CustomT
           }
         };
 
-        // Filtrar y mostrar solo los nombres de las páginas principales
+        // Lógica corregida: Agrupa rutas anidadas por prefijo
         let displayName;
-        if (route.name == "(cell)") {
+        if (route.name.startsWith("(cell)")) {
           displayName = "Celula";
-        } else if (route.name == "(user)") {
+        } else if (route.name.startsWith("(user)")) {
           displayName = "Usuario";
         } else {
           displayName = null;
         }
 
+        let isTrue: boolean = false;
+
         if (!displayName) return null;
+
+        for (const element of contentArray) {
+          if (element == displayName) isTrue = true;
+        }
+
+        if (isTrue === true) return null;
+        contentArray.push(displayName)
 
         return (
           <TouchableOpacity
             key={route.key}
             onPress={onPress}
             style={styles.tabButton}
-            activeOpacity={0.7}  // Efecto de opacidad al tocar para feedback táctil
+            activeOpacity={0.7}
           >
             <Text style={[styles.tabLabel, isFocused && styles.activeTabLabel]}>
               {displayName}
             </Text>
-            {isFocused && <View style={styles.activeIndicator} />}  {/* Underline sutil para el activo */}
+            {isFocused && <View style={styles.activeIndicator} />}
           </TouchableOpacity>
         );
       })}
@@ -58,39 +70,38 @@ export default function TabBar({ state, navigation, hideOnRoutes = [] }: CustomT
   );
 }
 
+
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    height: 70,  // Un poco más alto para un look más moderno
-    backgroundColor: '#ffffff',  // Blanco puro
-    borderTopWidth: 0,  // Quité el borde para un diseño más limpio
-    // Sombras suaves y modernas (compatible con iOS y Android)
-    elevation: 12,  // Android: sombra más pronunciada pero suave
+    height: 70,
+    backgroundColor: '#ffffff',
+    elevation: 12,
     boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.08)',
   },
   tabButton: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 12,  // Más espacio vertical para comodidad
+    paddingVertical: 12,
     paddingHorizontal: 4,
   },
   tabLabel: {
-    fontSize: 13,  // Tamaño un poco más grande para legibilidad moderna
-    color: '#8E8E93',  // Gris suave y moderno (como en apps iOS)
-    fontWeight: '500',  // Peso medio para un look equilibrado
+    fontSize: 13,
+    color: '#8E8E93',
+    fontWeight: '500',
     textAlign: 'center',
-    letterSpacing: 0.2,  // Espaciado sutil entre letras
+    letterSpacing: 0.2,
   },
   activeTabLabel: {
-    color: '#673ab7',  // Púrpura vibrante para activo
-    fontWeight: '600',  // Un poco más bold para énfasis
+    color: '#673ab7',
+    fontWeight: '600',
   },
   activeIndicator: {
-    height: 3,  // Underline delgado
-    width: 24,  // Ancho centrado
-    backgroundColor: '#673ab7',  // Mismo color que el texto activo
-    borderRadius: 2,  // Bordes redondeados para modernidad
-    marginTop: 4,  // Espacio entre texto y underline
+    height: 3,
+    width: 24,
+    backgroundColor: '#673ab7',
+    borderRadius: 2,
+    marginTop: 4,
   },
 });

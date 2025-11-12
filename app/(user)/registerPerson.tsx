@@ -1,13 +1,12 @@
 import InputWithLabel from '@/components/molecules/inputWithLabel';
+import SelectWithLabel from '@/components/molecules/selectWithLabel';
 import TextAreaWithLabel from '@/components/molecules/textAreaWithLabel';
 import personContext from '@/contexts/person/personContext';
-import { Picker } from '@react-native-picker/picker';
 import React, { useContext, useState } from 'react';
 import {
   ActivityIndicator,
   Button,
   Modal,
-  Platform,
   ScrollView,
   StyleSheet,
   Text,
@@ -228,60 +227,39 @@ export default function RegisterPersonScreen() {
       {getErrorMessage(lastName, 'Solo letras')}
 
       {/* Sexo */}
-      <View style={styles.fieldContainer}>
-        <Text style={styles.label}>
-          Sexo
-          <Text style={styles.requiredAsterisk}>*</Text>
-        </Text>
-        <View style={[
-          styles.pickerContainer,
+      <SelectWithLabel
+        labelText={'Sexo'}
+        mandatory={true}
+        theValue={sex.value}
+        setValue={setSex}
+        sample={'Seleccione sexo'}
+        dataOption={[{ title: "Masculino", id: "Masculino" }, { title: "Femenino", id: "Femenino" }]}
+        stylePickerContainer2={
           {
-            borderColor: (Boolean(sex.value) && !sex.isValid) ? '#e74c3c' : // ← FIJO: Boolean() para condición booleana
+            borderColor: (Boolean(sex.value) && !sex.isValid) ? '#e74c3c' :
               sex.isValid ? '#4CAF50' : '#e0e0e0'
           }
-        ]}>
-          <Picker
-            selectedValue={sex.value}
-            onValueChange={(itemValue) => setSex(itemValue)}  // ← Explícito: itemValue como string
-            style={styles.picker}
-            itemStyle={styles.pickerItem}
-          >
-            <Picker.Item label="Seleccione sexo" value="" />
-            <Picker.Item label="Masculino" value="Masculino" />
-            <Picker.Item label="Femenino" value="Femenino" />
-          </Picker>
-        </View>
-        {getErrorMessage(sex, 'Selecciona una opción')}
-      </View>
+        }
+      />
+      {getErrorMessage(sex, 'Selecciona una opción')}
 
       {/* MaritalStatus */}
-      <View style={styles.fieldContainer}>
-        <Text style={styles.label}>
-          Estado civil
-          <Text style={styles.requiredAsterisk}>*</Text>
-        </Text>
-        <View style={[
-          styles.pickerContainer,
+      <SelectWithLabel
+        labelText={'Estado civil'}
+        mandatory={true}
+        theValue={maritalStatus.value}
+        setValue={setMarital}
+        sample={'Seleccione estado civil'}
+        dataOption={[{ title: "Soltero/a", id: "Soltero/a" }, { title: "Casado/a", id: "Casado/a" },
+        { title: "Divorciado/a", id: "Divorciado/a" }, { title: "Viudo/a", id: "Viudo/a" }]}
+        stylePickerContainer2={
           {
-            borderColor: (Boolean(maritalStatus.value) && !maritalStatus.isValid) ? '#e74c3c' : // ← FIJO: Boolean() para condición booleana
+            borderColor: (Boolean(maritalStatus.value) && !maritalStatus.isValid) ? '#e74c3c' :
               maritalStatus.isValid ? '#4CAF50' : '#e0e0e0'
           }
-        ]}>
-          <Picker
-            selectedValue={maritalStatus.value}
-            onValueChange={(itemValue) => setMarital(itemValue)}  // ← Explícito: itemValue como string
-            style={styles.picker}
-            itemStyle={styles.pickerItem}
-          >
-            <Picker.Item label="Seleccione estado civil" value="" />
-            <Picker.Item label="Soltero/a" value="Soltero/a" />
-            <Picker.Item label="Casado/a" value="Casado/a" />
-            <Picker.Item label="Divorciado/a" value="Divorciado/a" />
-            <Picker.Item label="Viudo/a" value="Viudo/a" />
-          </Picker>
-        </View>
-        {getErrorMessage(sex, 'Selecciona una opción')}
-      </View>
+        }
+      />
+      {getErrorMessage(maritalStatus, 'Selecciona una opción')}
 
       {/* Cédula */}
       <InputWithLabel
@@ -369,9 +347,8 @@ const styles = StyleSheet.create({
     marginTop: 34,
     marginBottom: 20,
   },
-  fieldContainer: {
-    marginVertical: 10,
-  },
+
+
   label: {
     fontSize: 16,
     fontWeight: '600',
@@ -379,48 +356,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     letterSpacing: 0.2,
   },
-  requiredAsterisk: {
-    color: '#e74c3c',
-    fontSize: 16,
-    fontWeight: '700',
-    marginLeft: 2,
-  },
-  pickerContainer: {
-    backgroundColor: '#fff',
-    borderWidth: 1,
-    borderColor: '#e0e0e0',
-    borderRadius: 12,
-    paddingHorizontal: 15,
-    paddingVertical: 12,
-    // Sombra sutil 
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.1,
-        shadowRadius: 2,
-      },
-      android: {
-        elevation: 2,
-      },
-    }),
-  },
-  picker: {
-    flex: 1,
-    height: 44,
-    color: '#333',
-    borderColor: 'rgba(255, 255, 255, 0.02)',
-    fontSize: 16,
-    ...Platform.select({
-      android: { backgroundColor: 'transparent' },
-    }),
-  },
-  pickerItem: {
-    fontSize: 16,
-    color: '#555',
-    backgroundColor: '#fafafa',
-    fontWeight: '500',
-  },
+
   //---------------------------------------------------------------
   //---------------------------------------------------------------
   overlay: {
