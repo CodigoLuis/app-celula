@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Dimensions, FlatList, StyleSheet, Text, View } from 'react-native';
-import { LineChart } from 'react-native-chart-kit';
+import { FlatList, StyleSheet, Text, View } from 'react-native';
+// import { LineChart } from 'react-native-chart-kit';
 
 type MeetingData = {
   month: string;
@@ -87,7 +87,7 @@ const IndicadorePorMes = () => {
       {/* Gráfico de líneas */}
       <View style={styles.chartContainer}>
         <Text style={styles.chartTitle}>Reuniones por mes -- hola Luis</Text>
-        <LineChart
+        {/* <LineChart
           data={chartData}
           width={Dimensions.get('window').width - 40}
           height={160}
@@ -97,7 +97,7 @@ const IndicadorePorMes = () => {
           bezier
           style={styles.chart}
           withVerticalLines={false}
-        />
+        /> */}
       </View>
 
       {/* Indicador estático */}
@@ -117,7 +117,7 @@ const IndicadorePorMes = () => {
       {/* Lista de reuniones */}
       <FlatList
         data={DataWeek}
-        keyExtractor={(item) => item.month}
+        // keyExtractor={(item) => item.month}
         renderItem={({ item }) => (
           <View style={styles.dataItem}>
             <Text style={styles.monthText}>{item.month}</Text>

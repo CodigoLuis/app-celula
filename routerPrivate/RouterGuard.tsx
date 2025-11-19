@@ -76,7 +76,7 @@ const RouterGuard = ({ children }: { children: React.ReactNode }) => {
     // Caso 2: Autenticado en ruta pública → Redirige a home del grupo (ajusta por rol si necesitas)
     if (authenticated === true && publicRoute) {
       // console.log('→ Redirigiendo a /(cell)/home (auth en pública)');
-      router.replace('/(cell)/home');  // Cambia a lógica por rol: ej. '/(user)/home2' si userRole === 'user'
+      router.replace('/(user)/viewUserDataList');  // Cambia a lógica por rol: ej. '/(user)/home2' si userRole === 'user'
       return;
     }
 

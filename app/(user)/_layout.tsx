@@ -4,7 +4,7 @@ import { Drawer } from 'expo-router/drawer';
 import React, { useContext } from 'react';
 import { Pressable, Text } from 'react-native';
 
-export default function TabsLayout() {
+export default function TabsLayoutUser() {
     // const router = useRouter();
     const { signOut } = useContext(authContext);
 
