@@ -45,72 +45,14 @@ const IndicadorePorMes = () => {
     { id: 16, month: 'Abr', week: 4, count: 2 },
   ]);
 
-  // Datos para el gráfico
-  const chartData = {
-    labels: meetingData.map(item => item.month),
-    datasets: [
-      {
-        data: meetingData.map(item => item.count),
-        color: (opacity = 1) => `rgba(75, 192, 192, ${opacity})`, // Color de la línea
-        strokeWidth: 2 // Ancho de la línea
-      },
-      {
-        data: meetingData.map(item => item.count2),
-        color: (opacity = 1) => `rgba(175, 92, 192, ${opacity})`, // Color de la línea
-        strokeWidth: 2 // Ancho de la línea
-      },
-    ],
-  };
-
-  // Configuración del gráfico
-  const chartConfig = {
-    backgroundGradientFrom: '#ffffff',
-    backgroundGradientTo: '#ffffff',
-    decimalPlaces: 0,
-    color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-    labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-    style: {
-      borderRadius: 16
-    },
-    propsForDots: {
-      r: '4',
-      strokeWidth: '2',
-      stroke: '#4bc0c0'
-    }
-  };
-
-  // Calcular el promedio de reuniones
-  const averageMeetings = meetingData.reduce((acc, curr) => acc + curr.count, 0) / meetingData.length;
-
+  
   return (
     <View style={styles.container}>
       {/* Gráfico de líneas */}
       <View style={styles.chartContainer}>
         <Text style={styles.chartTitle}>Reuniones por mes -- hola Luis</Text>
-        {/* <LineChart
-          data={chartData}
-          width={Dimensions.get('window').width - 40}
-          height={160}
-          // height={220}
-          yAxisSuffix=""
-          chartConfig={chartConfig}
-          bezier
-          style={styles.chart}
-          withVerticalLines={false}
-        /> */}
       </View>
 
-      {/* Indicador estático */}
-      <View style={styles.staticIndicator}>
-        <Text style={styles.staticNumber}>{meetingData.length}</Text>
-        <Text style={styles.staticLabel}>Meses registrados</Text>
-      </View>
-
-      {/* Indicador de promedio */}
-      <View style={styles.averageIndicator}>
-        <Text style={styles.averageNumber}>{averageMeetings.toFixed(1)}</Text>
-        <Text style={styles.averageLabel}>Promedio mensual</Text>
-      </View>
 
       <Text style={{ marginTop: 110, fontSize: 18, fontWeight: '600', }}>Reuniones por semana</Text>
 

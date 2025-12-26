@@ -9,6 +9,29 @@ export interface DataUser {
   territory: string;
 }
 
+// interface ListUser {
+//   id: number;
+//   username: string;
+//   email?: string;
+//   active: boolean;
+//   created_at: string;
+//   person: {
+//     photo?: string;
+//     firstName: string;
+//     lastName: string;
+//     gender: string;
+//     maritalStatus?: string;
+//     idNumber: string;
+//     educationLevel?: string;
+//     phone?: string;
+//     address?: string;
+//     birthDate?: string;
+//   };
+//   userType: { title: string };
+//   territory: { name: string; color: string };
+// }
+
+
 export interface listUser {
   id: number;
   username: string;
@@ -19,12 +42,14 @@ export interface listUser {
     gender: string;
   };
   userType: {
+    id: number;
     title: string;
   };
   territory: {
-    id: string;
+    id: number;
     name: string;
     male: boolean;
+    color: string;
   };
 }
 
@@ -33,14 +58,14 @@ export interface dataTheUser {
 }
 
 export interface ContextProps {
-  user: { 
-    data: dataTheUser; 
+  user: {
+    data: dataTheUser;
     existing: boolean;
-  } | null; 
+  } | null;
   dataListUser: listUser[];
   registerUser: (data: DataUser) => Promise<boolean>;
-  existingNameUser: (data: string) => Promise<boolean>; 
-  getListOfUser: () => Promise<boolean>; 
+  existingNameUser: (data: string) => Promise<boolean>;
+  getListOfUser: () => Promise<boolean>;
 }
 
 const userContext = createContext<ContextProps>({

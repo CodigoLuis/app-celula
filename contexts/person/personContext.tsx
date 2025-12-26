@@ -32,16 +32,20 @@ export interface ContextProps {
     data: dataThePerson;
     existing: boolean;
   } | null;
+  dataListPerson: dataThePerson[],
   registerPerson: (data: DataPerson) => Promise<boolean>;
   existingPerson: (data: string) => Promise<boolean>;
   userDataCleansing: () => Promise<boolean>;
+  getListOfPersons: () => Promise<boolean>;
 }
 
 const personContext = createContext<ContextProps>({
   person: null,
+  dataListPerson: [],
   registerPerson: async () => false,
   existingPerson: async () => false,
   userDataCleansing: async () => false,
+  getListOfPersons: async () => false,
 
 });
 

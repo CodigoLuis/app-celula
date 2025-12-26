@@ -5,13 +5,15 @@ interface CustomInputProps {
   labelText: string;
   value: string;
   setValue: (text: string) => void;
-  password?: boolean; 
+  password?: boolean;
   styleContainer: any;
   styleLabel?: any;
   styleInput?: any;
   placeholder?: string;
   mandatory?: boolean;
+  editable?: boolean;
   keyboardType?: KeyboardTypeOptions;
+  maxLength?: number,
 }
 
 const InputWithLabel: React.FC<CustomInputProps> = ({
@@ -24,7 +26,9 @@ const InputWithLabel: React.FC<CustomInputProps> = ({
   styleInput,
   placeholder = '',
   mandatory = false,
+  editable = true,
   keyboardType = 'default', // 'email' --> 'email-address'; 'phone' --> 'phone-pad'; 'age' --> 'number-pad';
+  maxLength,
 }) => {
   return (
     <View style={styleContainer ? styleContainer : styles.container}>
@@ -36,6 +40,8 @@ const InputWithLabel: React.FC<CustomInputProps> = ({
         onChangeText={setValue}
         placeholder={placeholder}
         keyboardType={keyboardType}
+        maxLength={maxLength}
+        editable={editable}
       />
     </View>
   );
@@ -49,8 +55,10 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 16,
-    marginBottom: 4,
-    fontWeight: 'bold',
+    fontWeight: '600',
+    color: '#333',
+    marginBottom: 8,
+    letterSpacing: 0.2,
   },
   input: {
     borderWidth: 1,

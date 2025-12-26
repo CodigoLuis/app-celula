@@ -34,7 +34,7 @@ const SelectWithLabel: React.FC<CustomInputProps> = ({
     stylePickerContainer,
     stylePickerContainer2,
     styleSelect,
-    styleSelectPickerItem,
+    styleSelectPickerItem = null,
 }) => {
 
     return (
@@ -52,12 +52,14 @@ const SelectWithLabel: React.FC<CustomInputProps> = ({
                     style={styleSelect ? styleSelect : styles.picker}
                     itemStyle={styleSelectPickerItem ? styleSelectPickerItem : styles.pickerItem}
                 >
-                    <Picker.Item label={sample} value="" />
+                    
+                    <Picker.Item label={sample} value="" style={{ fontSize: 13.5 }} />
                     {dataOption && dataOption.length > 0 ? (
                         dataOption.map((op) => (
-                            <Picker.Item key={op.id} label={op.title} value={op.id} />
+                            <Picker.Item key={op.id} label={op.title} value={op.id} style={{ fontSize: 13.5 }} />
                         ))
                     ) : null}
+
                 </Picker>
             </View>
         </View>
@@ -85,9 +87,9 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         borderWidth: 1,
         borderColor: '#e0e0e0',
-        borderRadius: 12,
-        paddingHorizontal: 15,
-        paddingVertical: 12,
+        borderRadius: 8,
+        paddingHorizontal: 10,
+        paddingVertical: 0,
         // Sombra sutil 
         ...Platform.select({
             ios: {
@@ -102,17 +104,15 @@ const styles = StyleSheet.create({
         }),
     },
     picker: {
-        flex: 1,
-        height: 44,
         color: '#333',
         borderColor: 'rgba(255, 255, 255, 0.02)',
-        fontSize: 16,
+        fontSize: 10,
         ...Platform.select({
             android: { backgroundColor: 'transparent' },
         }),
     },
     pickerItem: {
-        fontSize: 16,
+        fontSize: 10,
         color: '#555',
         backgroundColor: '#fafafa',
         fontWeight: '500',

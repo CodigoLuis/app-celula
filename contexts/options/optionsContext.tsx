@@ -2,13 +2,13 @@ import { createContext } from 'react';
 
 
 interface OptionDataTypesUsers {
-  id: string;
+  id: number;
   description: string;
   title: string;
 }
 
 interface OptionDataTerritories {
-  id: string;
+  id: number;
   name: string;
   male: boolean;
 }

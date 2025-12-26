@@ -5,9 +5,9 @@ interface CustomInputProps {
   labelText: string;
   value: string;
   setValue: (text: string) => void;
-  styleContainer: any;
-  styleLabel: any;
-  styleInput: any;
+  styleContainer?: any;
+  styleLabel?: any;
+  styleInput?: any;
   placeholder?: string;
   mandatory?: boolean;
 }

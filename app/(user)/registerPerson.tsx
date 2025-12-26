@@ -3,6 +3,7 @@ import SelectWithLabel from '@/components/molecules/selectWithLabel';
 import TextAreaWithLabel from '@/components/molecules/textAreaWithLabel';
 import personContext from '@/contexts/person/personContext';
 import React, { useContext, useState } from 'react';
+import { FieldState } from '@/interface/default';
 import {
   ActivityIndicator,
   Button,
@@ -13,12 +14,6 @@ import {
   View
 } from 'react-native';
 import Toast from 'react-native-toast-message';
-
-// Interfaces para estados 
-interface FieldState {
-  value: string;
-  isValid: boolean;
-}
 
 const showToast = (message: string) => {
   Toast.show({

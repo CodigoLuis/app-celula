@@ -90,13 +90,45 @@ const PersonState: React.FC<StateProps> = ({ children }) => {
     return true;
   };
 
+  
+  const getListOfPersons = async (): Promise<boolean> => {
+
+    try {
+      const tokenString = await AsyncStorage.getItem('token');
+      if (tokenString) {
+        const token = JSON.parse(tokenString);
+        tokenAuth(token);
+      } else {
+        showToast("Error, error de validacion", 'error');
+        return false;
+      }
+
+      const { data: result } = await clientAxios.post('/person/get-list');
+
+      await dispatch({ type: 'GET_LIST_PERSONS', payload: { data: result } });
+
+      return true;
+
+    } catch (error: any) {
+      console.log("error----------------------------------------------------------");
+      console.log(error);
+      console.log("error----------------------------------------------------------");
+      const message = error?.response?.data?.message || 'Sin conexión';
+      showToast(message);
+      dispatch({ type: 'ERROR_USER', payload: message });  // Nuevo: Dispatch error
+      return false;
+    }
+  };
+
   return (
     <personContext.Provider
       value={{
         person: state.person,
+        dataListPerson: state.dataListPerson,
         registerPerson,
         existingPerson,
         userDataCleansing,
+        getListOfPersons,
       }}
     >
       {children}

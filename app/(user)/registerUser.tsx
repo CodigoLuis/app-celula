@@ -4,6 +4,7 @@ import optionsContext from '@/contexts/options/optionsContext';
 import personContext from '@/contexts/person/personContext';
 import userContext from '@/contexts/user/userContext';
 import React, { useContext, useEffect, useState } from 'react';
+import { FieldState } from '@/interface/default';
 import {
     ActivityIndicator,
     Button,
@@ -14,12 +15,6 @@ import {
     View
 } from 'react-native';
 import Toast from 'react-native-toast-message';
-
-// Interfaces para estados  second state field
-interface FieldState {
-    value: string;
-    isValid: boolean;
-}
 
 const showToast = (message: string) => {
     Toast.show({

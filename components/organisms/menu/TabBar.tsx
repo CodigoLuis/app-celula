@@ -1,11 +1,15 @@
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 interface CustomTabBarProps extends BottomTabBarProps {
   hideOnRoutes?: string[];
 }
 
 export default function TabBar({ state, navigation, hideOnRoutes = [] }: CustomTabBarProps) {
+
+  const insets = useSafeAreaInsets();
+  
   // Ocultar TabBar si la ruta actual está en la lista de rutas a ocultar
   const currentRoute = state.routes[state.index]?.name;
   if (hideOnRoutes.includes(currentRoute)) {
@@ -15,7 +19,7 @@ export default function TabBar({ state, navigation, hideOnRoutes = [] }: CustomT
   const contentArray: {}[] = [];
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { height: 60 + insets.bottom, paddingBottom: insets.bottom }]} >
 
       {state.routes.map((route, index) => {
         const isFocused = state.index === index;
@@ -74,7 +78,7 @@ export default function TabBar({ state, navigation, hideOnRoutes = [] }: CustomT
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    height: 70,
+    // height: 70,
     backgroundColor: '#ffffff',
     elevation: 12,
     boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.08)',
