@@ -120,7 +120,7 @@ export default function RegisterUserScreen() {
 
             dataArray.push({
                 "title": value1,
-                "id": value2
+                "id": String(value2)
             })
         }
 
@@ -139,7 +139,7 @@ export default function RegisterUserScreen() {
         for (const element of typesUsers.data) {
             dataArray.push({
                 "title": element.title,
-                "id": element.id
+                "id": String(element.id)
             })
         }
 

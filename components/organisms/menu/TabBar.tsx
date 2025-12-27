@@ -35,7 +35,7 @@ export default function TabBar({ state, navigation, hideOnRoutes = [] }: CustomT
           }
         };
 
-        // Lógica corregida: Agrupa rutas anidadas por prefijo
+        // Lógica: Agrupa rutas anidadas por prefijo
         let displayName;
         if (route.name.startsWith("(cell)")) {
           displayName = "Celula";

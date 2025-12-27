@@ -24,7 +24,7 @@ export default function RootLayout() {
                   <Tabs.Screen name="index" options={{ title: "Login" }} />
                   {/* Define rutas reales para tabs */}
                   <Tabs.Screen name="(cell)/home" options={{ title: "Celula" }} />
-                  <Tabs.Screen name="(user)/viewUserDataList" options={{ title: "Usuario" }} />
+                  <Tabs.Screen name="(user)/userListScreen" options={{ title: "Usuario" }} />
                   {/* Agrega más si necesitas, ej. (cell)/menu1 */}
                 </Tabs>
               </SafeAreaProvider>
