@@ -10,28 +10,12 @@ import { Person } from '@/interface/types';
 import { FieldState } from '@/interface/default';
 //ContextS
 import personContext from '@/contexts/person/personContext';
-
-
-const MOCK_PERSONS: Person[] = [
-    {
-        id: 1, first_name: 'Ana', last_name: 'Pérez', gender: 'Femenino',
-        marital_status: 'Casada', education_level: 'Universitario',
-        id_number: '12345678', phone: '555-1234', address: 'Calle 1, Sector A',
-        created_at: new Date(), territory_id: 'T1',
-        education: { leader_school: true, prophetic_school: false, consolidation_level: 'L2' }
-    },
-    {
-        id: 2, first_name: 'Juan', last_name: 'Gómez', gender: 'Masculino',
-        marital_status: 'Soltero', education_level: 'Secundario',
-        id_number: '87654321', phone: '555-5678', address: 'Av. Principal, Zona B',
-        created_at: new Date(), territory_id: 'T2',
-        education: { leader_school: false, prophetic_school: false, consolidation_level: 'P' }
-    },
-];
+import educationContext, { DataEducation } from '@/contexts/education/educationContext';
 
 const PersonListScreen: React.FC = () => {
     //contexts
     const { getListOfPersons, dataListPerson } = useContext(personContext);
+    const { registerEducation, updateEducation } = useContext(educationContext);
 
     const [persons, setPersons] = useState(dataListPerson);
     const [searchText, setSearchText] = useState<FieldState>({ value: '', isValid: null });
@@ -78,16 +62,34 @@ const PersonListScreen: React.FC = () => {
         }
     };
 
-    const handleUpdatePerson = async (updatedData: Person) => {
-        // Aquí simulas la petición al servidor (PUT/PATCH)
-        try {
-            const newPersons = persons.map(p => p.id === updatedData.id ? updatedData : p);
-            // setPersons(newPersons);
-            Alert.alert("Éxito", "Datos de la persona actualizados.");
-            setModalVisible(false);
-        } catch (error) {
-            Alert.alert("Error", "No se pudo actualizar.");
+    const handleUpdateEducation = async (updatedData: DataEducation) => {
+
+        const newPersons = persons.map(p => p.id === updatedData.person ? p : null);
+
+        if (newPersons[0]?.education) {
+            if (
+                (updatedData.consolidationLevel !== newPersons[0]?.education.consolidationLevel) ||
+                (updatedData.leaderSchool !== newPersons[0]?.education.leaderSchool) ||
+                (updatedData.propheticSchool !== newPersons[0]?.education.propheticSchool)
+            ) {
+
+                await updateEducation(updatedData);
+                await getListOfPersons();
+                setPersons(dataListPerson);
+
+            } else {
+                return false
+            }
+
+        } else {
+
+            await registerEducation(updatedData);
+            await getListOfPersons();
+            setPersons(dataListPerson);
         }
+
+        setModalVisible(false);
+        return true;
     };
 
     return (
@@ -148,28 +150,86 @@ const PersonListScreen: React.FC = () => {
                 visible={modalVisible}
                 person={selectedPerson}
                 onClose={() => setModalVisible(false)}
-                onSave={handleUpdatePerson}
+                whenUpdating={handleUpdateEducation}
             />
         </View>
     );
 };
 
 const styles = StyleSheet.create({
-    container: { flex: 1, padding: 10, backgroundColor: '#f5f5f5' },
-    titulo: { fontSize: 24, fontWeight: 'bold', marginBottom: 15, textAlign: 'center', color: '#1a1a1a' },
-    shadowedViewContent: {
-        backgroundColor: 'white', paddingHorizontal: 15, paddingVertical: 15, borderRadius: 12, marginBottom: 25,
+    container:
+    {
+        flex: 1,
+        padding: 10,
+        backgroundColor: '#f5f5f5'
+    },
+
+    titulo:
+    {
+        fontSize: 24,
+        fontWeight: 'bold',
+        marginBottom: 15,
+        textAlign: 'center',
+        color: '#1a1a1a'
+    },
+
+    shadowedViewContent:
+    {
+        backgroundColor: 'white',
+        paddingHorizontal: 15,
+        paddingVertical: 15,
+        borderRadius: 12,
+        marginBottom: 25,
         ...Platform.select({
             ios: { shadowColor: '#000', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.1, shadowRadius: 5 },
             android: { elevation: 4 },
         }),
     },
-    inputStyle: { borderWidth: 1, borderColor: '#ccc', borderRadius: 8, padding: 12, fontSize: 14, height: 40 },
-    labelStyle: { fontSize: 15, fontWeight: '600', color: '#333', marginBottom: 5 },
-    pickerRow: { flexDirection: 'row', justifyContent: 'space-between' },
-    pickerContainerStyle: { backgroundColor: '#fff', borderWidth: 1, borderColor: '#e0e0e0', borderRadius: 8 },
-    listContent: { paddingBottom: 20 },
-    noResults: { textAlign: 'center', marginTop: 20, fontSize: 16, color: '#999' },
+
+    inputStyle:
+    {
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 8,
+        padding: 12,
+        fontSize: 14,
+        height: 40
+    },
+
+    labelStyle:
+    {
+        fontSize: 15,
+        fontWeight: '600',
+        color: '#333',
+        marginBottom: 5
+    },
+
+    pickerRow:
+    {
+        flexDirection: 'row',
+        justifyContent: 'space-between'
+    },
+
+    pickerContainerStyle:
+    {
+        backgroundColor: '#fff',
+        borderWidth: 1,
+        borderColor: '#e0e0e0',
+        borderRadius: 8
+    },
+
+    listContent:
+    {
+        paddingBottom: 20
+    },
+
+    noResults:
+    {
+        textAlign: 'center',
+        marginTop: 20,
+        fontSize: 16,
+        color: '#999'
+    },
 });
 
 export default PersonListScreen;

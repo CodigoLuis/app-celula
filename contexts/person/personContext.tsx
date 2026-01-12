@@ -25,6 +25,13 @@ export interface dataThePerson {
   createdAt: null | string | undefined;
   updatedAt: null | string | undefined;
   isUser: null | boolean | undefined;
+  education: { 
+    consolidationLevel: string; 
+    id: number; 
+    leaderSchool: boolean; 
+    personId: number; 
+    propheticSchool: boolean;
+  };
 }
 
 export interface ContextProps {

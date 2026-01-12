@@ -28,7 +28,7 @@ export default function LoginScreen() {
 
     const success = await logIn({ username: inputUsername, password: inputPassword });
     console.log(success);
-    if (success === true) {
+    if (success === true) { 
       router.replace("/home");
     }
   };

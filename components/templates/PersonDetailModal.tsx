@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Modal, ScrollView, TouchableOpacity, Switch, TextInput, Image, Alert } from 'react-native';
 
-const PersonDetailModal = ({ visible, person, onClose, onSave, onNavigateToEdit }: any) => {
+const PersonDetailModal = ({ visible, person, onClose, whenUpdating, onNavigateToEdit }: any) => {
     const [editEdu, setEditEdu] = useState(false);
     const [form, setForm] = useState<any>(null);
 
@@ -39,7 +39,13 @@ const PersonDetailModal = ({ visible, person, onClose, onSave, onNavigateToEdit 
     };
 
     const saveEducation = () => {
-        onSave(form);
+        whenUpdating({
+            id: form.education?.id,
+            consolidationLevel: form.education?.consolidationLevel,
+            leaderSchool: form.education?.leaderSchool,
+            propheticSchool: form.education?.propheticSchool,
+            person: form.id,
+        });
         setEditEdu(false);
     };
 
