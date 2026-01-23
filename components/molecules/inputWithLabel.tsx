@@ -2,11 +2,11 @@ import React from 'react';
 import { KeyboardTypeOptions, StyleSheet, Text, TextInput, View } from 'react-native';
 
 interface CustomInputProps {
-  labelText: string;
-  value: string;
-  setValue: (text: string) => void;
+  labelText?: string;
+  value?: string;
+  setValue?: (text: string) => void;
   password?: boolean;
-  styleContainer: any;
+  styleContainer?: any;
   styleLabel?: any;
   styleInput?: any;
   placeholder?: string;

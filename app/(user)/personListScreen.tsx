@@ -1,10 +1,11 @@
 import React, { useState, useMemo, useContext, useEffect } from 'react';
 import { View, Text, FlatList, StyleSheet, Platform, Alert } from 'react-native';
+import { useLocalSearchParams } from 'expo-router';
 // Componentes
 import InputWithLabel from '@/components/molecules/inputWithLabel';
 import SelectWithLabel from '@/components/molecules/selectWithLabel';
 import PersonItem from '../../components/templates/personItem';
-import PersonDetailModal from '../../components/templates/PersonDetailModal';
+import PersonDetailModal from '../../components/templates/personDetailModal';
 // Interfaces
 import { Person } from '@/interface/types';
 import { FieldState } from '@/interface/default';
@@ -13,6 +14,8 @@ import personContext from '@/contexts/person/personContext';
 import educationContext, { DataEducation } from '@/contexts/education/educationContext';
 
 const PersonListScreen: React.FC = () => {
+    const params = useLocalSearchParams();
+
     //contexts
     const { getListOfPersons, dataListPerson } = useContext(personContext);
     const { registerEducation, updateEducation } = useContext(educationContext);
@@ -20,7 +23,7 @@ const PersonListScreen: React.FC = () => {
     const [persons, setPersons] = useState(dataListPerson);
     const [searchText, setSearchText] = useState<FieldState>({ value: '', isValid: null });
     const [filterGender, setFilterGender] = useState<FieldState>({ value: '', isValid: null });
-    const [filterEducation, setFilterEducation] = useState<FieldState>({ value: '', isValid: null });
+    const [maritalStatus, setMaritalStatus] = useState<FieldState>({ value: '', isValid: null });
 
     // ESTADOS PARA LA MODAL
     const [selectedPerson, setSelectedPerson] = useState({});
@@ -28,15 +31,14 @@ const PersonListScreen: React.FC = () => {
 
     useEffect(() => {
         getListOfPersons();
-    }, []);
+        setPersons(dataListPerson);
+        setModalVisible(false);
+    }, [Boolean(params.update)]);
 
     // Opciones para los selectores
     const genderOptions = [{ title: 'Masculino', id: 'Male' }, { title: 'Femenino', id: 'Female' }];
-    const educationOptions = [
-        { title: 'Primario', id: 'Primario' },
-        { title: 'Secundario', id: 'Secundario' },
-        { title: 'Universitario', id: 'Universitario' }
-    ];
+    const maritalStatusOptions = [{ title: "Soltero/a", id: "Soltero/a" }, { title: "Concubinato", id: "Concubinato" }, { title: "Casado/a", id: "Casado/a" },
+            { title: "Divorciado/a", id: "Divorciado/a" }, { title: "Viudo/a", id: "Viudo/a" }];
 
     const filteredPersons = useMemo(() => {
         setPersons(dataListPerson);
@@ -46,11 +48,11 @@ const PersonListScreen: React.FC = () => {
                 person.lastName?.toLowerCase().includes(searchText.value.toLowerCase()) ||
                 person.idNumber?.includes(searchText.value);
             const genderMatch = !filterGender.value || person.gender === filterGender.value;
-            const educationMatch = !filterEducation.value || person.educationLevel === filterEducation.value;
-            return searchMatch && genderMatch && educationMatch;
+            const maritalStatusMatch = !maritalStatus.value || person.maritalStatus === maritalStatus.value;
+            return searchMatch && genderMatch && maritalStatusMatch;
         });
 
-    }, [searchText.value, filterGender.value, filterEducation.value, persons, dataListPerson]);
+    }, [searchText.value, filterGender.value, maritalStatus.value, persons, dataListPerson]);
 
 
     // FUNCIONES DE ACCIÓN
@@ -94,7 +96,7 @@ const PersonListScreen: React.FC = () => {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.titulo}>📋 Listado de Personas</Text>
+            {/* <Text style={styles.titulo}>📋 Listado de Personas</Text> */}
 
             <View style={styles.shadowedViewContent}>
                 <InputWithLabel
@@ -118,11 +120,11 @@ const PersonListScreen: React.FC = () => {
                         stylePickerContainer={styles.pickerContainerStyle}
                     />
                     <SelectWithLabel
-                        labelText={'Educación'}
-                        theValue={filterEducation.value}
-                        setValue={(val) => setFilterEducation({ value: val, isValid: null })}
+                        labelText={'Estado civil'}
+                        theValue={maritalStatus.value}
+                        setValue={(val) => setMaritalStatus({ value: val, isValid: null })}
                         sample={'Todos'}
-                        dataOption={educationOptions}
+                        dataOption={maritalStatusOptions}
                         styleContainer={{ width: '48%' }}
                         styleLabel={styles.labelStyle}
                         stylePickerContainer={styles.pickerContainerStyle}

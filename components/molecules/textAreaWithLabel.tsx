@@ -2,9 +2,9 @@ import React from 'react';
 import { StyleSheet, Text, TextInput, View } from 'react-native';
 
 interface CustomInputProps {
-  labelText: string;
-  value: string;
-  setValue: (text: string) => void;
+  labelText?: string;
+  value?: string;
+  setValue?: (text: string) => void;
   styleContainer?: any;
   styleLabel?: any;
   styleInput?: any;

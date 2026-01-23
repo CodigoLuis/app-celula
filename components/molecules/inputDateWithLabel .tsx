@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, TextInput, View, Button, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, TextInput, View, TouchableOpacity } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
 interface CustomInputProps {
@@ -45,22 +45,18 @@ const InputWithLabel: React.FC<CustomInputProps> = ({
         {labelText} {mandatory === true ? <Text style={styles.inputMandatory}>*</Text> : null}
       </Text>
 
-      {/* Fila horizontal: Botón e Input */}
-      {/* <View style={styles.rowContainer}> */}
       <View style={{}}>
-        {/* <View style={[styles.buttonContainer, { display: "none" }]}>
-          <Button onPress={showDatepicker} title="Fecha" />
-        </View> */}
 
         <TouchableOpacity
-          // 2. Aquí aplicamos el 'onClick' móvil (onPress)
           onPress={showDatepicker}
         // activeOpacity={0.7} // Retroalimentación visual al presionar
         >
           <TextInput
-            // style={[styles.input, styles.inputInRow, styleInput, { flex: 1 }]}  // Combina estilos 
-            style={[styles.input, styleInput, { flex: 1 }]}  // Combina estilos
-            value={value === null ? "" : typeMode === 'date' ? value.toLocaleDateString() : typeMode === 'time' ? value.toLocaleTimeString() : value.toLocaleString()}
+            style={[styles.input, styleInput, { flex: 1 }]}
+            value={value === null || !(value instanceof Date) ? "" :
+              typeMode === 'date' ? (value.toLocaleDateString() == "Invalid Date" ? "" : value.toLocaleDateString()) :
+                typeMode === 'time' ? (value.toLocaleTimeString() == "Invalid Date" ? "" : value.toLocaleTimeString()) :
+                  (value.toLocaleString() == "Invalid Date" ? "" : value.toLocaleString())}
             placeholder={placeholder}
             editable={false}
           // onPress={}
@@ -103,18 +99,6 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     letterSpacing: 0.2,
   },
-  // rowContainer: {
-  //   flexDirection: 'row',  // Alinea en fila horizontal
-  //   alignItems: 'center',  // Centra verticalmente
-  //   justifyContent: 'space-between',  // Espacio entre botón e input
-  // },
-  // buttonContainer: {
-  //   flex: 0.3,  // Botón ocupa ~30% del ancho
-  //   marginRight: 8,  // Espacio entre botón e input
-  //   // padding: 5,
-  //   // borderRadius: 50,
-  //   // backgroundColor: "red",
-  // },
   input: {
     borderColor: '#ccc',
     borderRadius: 7,
@@ -123,9 +107,6 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     fontSize: 15.5,
   },
-  // inputInRow: {
-  //   flex: 0.7,  // Input ocupa ~70% del ancho
-  // },
   inputMandatory: {
     color: "red",
   },

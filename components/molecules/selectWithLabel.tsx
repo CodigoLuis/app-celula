@@ -3,9 +3,9 @@ import React from 'react';
 import { Platform, StyleSheet, Text, View } from 'react-native';
 
 interface CustomInputProps {
-    labelText: string;
-    theValue: string;
-    setValue: (text: string) => void;
+    labelText?: string;
+    theValue?: string;
+    setValue?: (text: string) => void;
     dataOption?: { title: string; id: string }[];
     sample?: string;
     mandatory?: boolean;

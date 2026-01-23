@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Modal, ScrollView, TouchableOpacity, Switch, TextInput, Image, Alert } from 'react-native';
+import { useRouter } from 'expo-router';
 
-const PersonDetailModal = ({ visible, person, onClose, whenUpdating, onNavigateToEdit }: any) => {
+const PersonDetailModal = ({ visible, person, onClose, whenUpdating }: { visible: boolean, person: any, onClose: () => void, whenUpdating: any }) => {
+    const router = useRouter();
+
     const [editEdu, setEditEdu] = useState(false);
     const [form, setForm] = useState<any>(null);
 
@@ -11,7 +14,6 @@ const PersonDetailModal = ({ visible, person, onClose, whenUpdating, onNavigateT
 
     if (!form) return null;
 
-    // --- Lógica de Negocio ---
 
     const isBirthdayToday = () => {
         if (!form.birthDate) return false;
@@ -22,20 +24,12 @@ const PersonDetailModal = ({ visible, person, onClose, whenUpdating, onNavigateT
     };
 
     const handleGoToEdit = () => {
-        Alert.alert(
-            "Modificar Información",
-            `¿Estás seguro de que deseas salir para modificar los datos generales de ${form.first_name}?`,
-            [
-                { text: "Cancelar", style: "cancel" },
-                {
-                    text: "Sí, ir a editar",
-                    onPress: () => {
-                        onClose();
-                        onNavigateToEdit(form.id);
-                    }
-                }
-            ]
-        );
+
+        router.push({
+            pathname: '/updatePersonScreen', // La ruta del archivo en /app
+            params: form
+        });
+
     };
 
     const saveEducation = () => {
@@ -70,7 +64,8 @@ const PersonDetailModal = ({ visible, person, onClose, whenUpdating, onNavigateT
                     <View style={[styles.profileHeader, { backgroundColor: isFemale ? '#fd79a77c' : '#0091ff93' }]}>
                         <View>
                             <Image
-                                source={{ uri: `https://ui-avatars.com/api/?name=${form.first_name}+${form.last_name}&background=random` }}
+                                source={require('@/assets/images/cuadrangular.png')}
+                                // source={{ uri: `https://ui-avatars.com/api/?name=${form.first_name}+${form.last_name}&background=random` }}
                                 // source={{ uri: form.photo || `https://ui-avatars.com/api/?name=${form.first_name}+${form.last_name}&background=random` }}
                                 style={[styles.bigPhoto, isBirthdayToday() && styles.photoBirthday]}
                             />
@@ -86,7 +81,7 @@ const PersonDetailModal = ({ visible, person, onClose, whenUpdating, onNavigateT
                         <View style={styles.sectionHeader}>
                             <Text style={styles.sectionLabel}>Información Personal</Text>
                             <TouchableOpacity onPress={handleGoToEdit} style={styles.externalEditBtn}>
-                                <Text style={styles.externalEditBtnText}>⚙️ Gestionar Datos</Text>
+                                <Text style={styles.externalEditBtnText}>⚙️ Editar Datos</Text>
                             </TouchableOpacity>
                         </View>
 
@@ -164,8 +159,6 @@ const SwitchRow = ({ label, value, onValueChange, disabled }: any) => (
         />
     </View>
 );
-
-// --- ESTILOS ---
 
 const styles = StyleSheet.create({
     // Estilos de Contenedor y Header

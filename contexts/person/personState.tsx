@@ -55,6 +55,34 @@ const PersonState: React.FC<StateProps> = ({ children }) => {
     }
   };
 
+  const updatePersonData = async (id: number, personData: DataPerson): Promise<boolean> => {
+    try {
+
+      const tokenString = await AsyncStorage.getItem('token');
+      if (tokenString) {
+        const token = JSON.parse(tokenString);
+        tokenAuth(token);
+      } else {
+        showToast("Error, error de validacion", 'error');
+        return false;
+      }
+
+      const { data: result } = await clientAxios.put(`/person/update/${id}`, personData);
+
+      showToast("Actualización exitosa", 'info');  // Mejora: Feedback positivo
+      return true;
+
+    } catch (error: any) {
+      let message = error?.response?.data?.message || 'Sin conexión o error en registro';
+      if (error.response && error.response.status === 404) {
+        message = 'Error: La persona no existe en la base de datos.';
+      }
+      showToast(message);
+      dispatch({ type: 'ERROR_PERSON', payload: message });  // Nuevo: Dispatch error
+      return false;
+    }
+  };
+
   const existingPerson = async (idNumber: string): Promise<boolean> => {  // Corregido: Promise<boolean>
     try {
       const tokenString = await AsyncStorage.getItem('token');
@@ -90,7 +118,7 @@ const PersonState: React.FC<StateProps> = ({ children }) => {
     return true;
   };
 
-  
+
   const getListOfPersons = async (): Promise<boolean> => {
 
     try {
@@ -126,6 +154,7 @@ const PersonState: React.FC<StateProps> = ({ children }) => {
         person: state.person,
         dataListPerson: state.dataListPerson,
         registerPerson,
+        updatePersonData,
         existingPerson,
         userDataCleansing,
         getListOfPersons,

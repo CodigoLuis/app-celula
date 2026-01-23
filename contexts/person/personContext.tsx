@@ -5,9 +5,11 @@ export interface DataPerson {
   lastName: string;
   gender: string;
   idNumber: string;
-  maritalStatus: string;
-  phone: string;
-  address: string;
+  maritalStatus?: string;
+  phone?: string;
+  address?: string;
+  educationLevel?: string;
+  birthDate?: Date | null;
 }
 
 export interface dataThePerson {
@@ -41,6 +43,7 @@ export interface ContextProps {
   } | null;
   dataListPerson: dataThePerson[],
   registerPerson: (data: DataPerson) => Promise<boolean>;
+  updatePersonData: (id: number, data: DataPerson) => Promise<boolean>;
   existingPerson: (data: string) => Promise<boolean>;
   userDataCleansing: () => Promise<boolean>;
   getListOfPersons: () => Promise<boolean>;
@@ -50,6 +53,7 @@ const personContext = createContext<ContextProps>({
   person: null,
   dataListPerson: [],
   registerPerson: async () => false,
+  updatePersonData: async () => false,
   existingPerson: async () => false,
   userDataCleansing: async () => false,
   getListOfPersons: async () => false,

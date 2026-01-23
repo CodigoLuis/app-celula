@@ -72,11 +72,19 @@ function CustomDrawerContent(props: any) {
             icon={({ color, size }) => <MaterialIcons name="format-list-bulleted" size={size} color={color} />}
             onPress={() => props.navigation.navigate('personListScreen')}
           />
+
           <DrawerItem
             label="Registrar Persona"
             icon={({ color, size }) => <MaterialIcons name="add-circle-outline" size={size} color={color} />}
             onPress={() => props.navigation.navigate('registerPersonScreen')}
           />
+
+          {/* <DrawerItem
+            label="Actulizar Persona"
+            icon={({ color, size }) => <MaterialIcons name="add-circle-outline" size={size} color={color} />}
+            onPress={() => props.navigation.navigate('updatePersonScreen')}
+          /> */}
+
         </View>
       )}
 
@@ -126,6 +134,7 @@ export default function TabsLayoutUser() {
             <Drawer.Screen name="registerUserScreen" options={{ title: "Registrar Usuario", drawerItemStyle: { display: 'none' } }} />
             <Drawer.Screen name="personListScreen" options={{ title: "Lista de Personas", drawerItemStyle: { display: 'none' } }} />
             <Drawer.Screen name="registerPersonScreen" options={{ title: "Registrar Persona", drawerItemStyle: { display: 'none' } }} />
+            {/* <Drawer.Screen name="updatePersonScreen" options={{ title: "Actulizar Persona", drawerItemStyle: { display: 'none' } }} /> */}
             <Drawer.Screen name="profileScreen" options={{ title: "Perfil", drawerItemStyle: { display: 'none' } }} />
         </Drawer>
     );

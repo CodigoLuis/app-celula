@@ -1,288 +1,148 @@
-// import React from 'react';
-// import { View, Text, StyleSheet, Image, ScrollView, SafeAreaView } from 'react-native';
-
-// // Definimos la interfaz basada en tu modelo
-// interface ListUser {
-//   id: number;
-//   username: string;
-//   active: boolean;
-//   person: {
-//     firstName: string;
-//     lastName: string;
-//     gender: string;
-//   };
-//   userType: {
-//     id: number;
-//     title: string;
-//   };
-//   territory: {
-//     id: number;
-//     name: string;
-//     male: boolean;
-//     color: string;
-//   };
-// }
-
-// interface Props {
-//   user: ListUser;
-// }
-
-// const UserDetailScreen = ({ user }: Props) => {
-//   return (
-//     <SafeAreaView style={styles.container}>
-//       <ScrollView showsVerticalScrollIndicator={false}>
-
-//         {/* Sección de Header con Imagen */}
-//         <View style={styles.header}>
-//           <View style={[styles.imageContainer, { borderColor: user.territory.color || '#ccc' }]}>
-//             <Image
-//               source={{ uri: `https://ui-avatars.com/api/?name=${user.person.firstName}+${user.person.lastName}&size=150&background=random` }} 
-//               style={styles.profileImage}
-//             />
-//           </View>
-//           <Text style={styles.name}>{`${user.person.firstName} ${user.person.lastName}`}</Text>
-//           <View style={[styles.badge, { backgroundColor: user.active ? '#4CAF50' : '#F44336' }]}>
-//             <Text style={styles.badgeText}>{user.active ? 'Activo' : 'Inactivo'}</Text>
-//           </View>
-//         </View>
-
-//         {/* Información de Usuario */}
-//         <View style={styles.section}>
-//           <Text style={styles.sectionTitle}>Información de Cuenta</Text>
-//           <InfoRow label="Username" value={`@${user.username}`} />
-//           <InfoRow label="Tipo de Usuario" value={user.userType.title} />
-//           <InfoRow label="Género" value={user.person.gender} />
-//         </View>
-
-//         {/* Información de Territorio */}
-//         <View style={styles.section}>
-//           <Text style={styles.sectionTitle}>Territorio y Asignación</Text>
-//           <View style={styles.territoryCard}>
-//             <View style={[styles.colorIndicator, { backgroundColor: user.territory.color }]} />
-//             <View>
-//               <Text style={styles.territoryName}>{user.territory.name}</Text>
-//               <Text style={styles.territoryDetail}>ID: {user.territory.id}</Text>
-//             </View>
-//           </View>
-//         </View>
-
-//       </ScrollView>
-//     </SafeAreaView>
-//   );
-// };
-
-// // Componente auxiliar para filas de información
-// const InfoRow = ({ label, value }: { label: string; value: string }) => (
-//   <View style={styles.infoRow}>
-//     <Text style={styles.infoLabel}>{label}</Text>
-//     <Text style={styles.infoValue}>{value}</Text>
-//   </View>
-// );
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     backgroundColor: '#f5f5f5',
-//   },
-//   header: {
-//     alignItems: 'center',
-//     padding: 30,
-//     backgroundColor: '#ffffff',
-//     borderBottomLeftRadius: 30,
-//     borderBottomRightRadius: 30,
-//     elevation: 4,
-//     shadowColor: '#000',
-//     shadowOffset: { width: 0, height: 2 },
-//     shadowOpacity: 0.1,
-//     shadowRadius: 4,
-//   },
-//   imageContainer: {
-//     width: 120,
-//     height: 120,
-//     borderRadius: 60,
-//     borderWidth: 4,
-//     padding: 3,
-//     marginBottom: 15,
-//   },
-//   profileImage: {
-//     width: '100%',
-//     height: '100%',
-//     borderRadius: 60,
-//   },
-//   name: {
-//     fontSize: 22,
-//     fontWeight: 'bold',
-//     color: '#333',
-//   },
-//   badge: {
-//     marginTop: 8,
-//     paddingHorizontal: 12,
-//     paddingVertical: 4,
-//     borderRadius: 20,
-//   },
-//   badgeText: {
-//     color: 'white',
-//     fontSize: 12,
-//     fontWeight: '600',
-//   },
-//   section: {
-//     margin: 20,
-//     padding: 15,
-//     backgroundColor: 'white',
-//     borderRadius: 15,
-//   },
-//   sectionTitle: {
-//     fontSize: 16,
-//     fontWeight: '700',
-//     color: '#666',
-//     marginBottom: 15,
-//     textTransform: 'uppercase',
-//   },
-//   infoRow: {
-//     flexDirection: 'row',
-//     justifyContent: 'space-between',
-//     paddingVertical: 10,
-//     borderBottomWidth: 0.5,
-//     borderBottomColor: '#eee',
-//   },
-//   infoLabel: {
-//     color: '#888',
-//     fontSize: 14,
-//   },
-//   infoValue: {
-//     color: '#333',
-//     fontWeight: '500',
-//     fontSize: 14,
-//   },
-//   territoryCard: {
-//     flexDirection: 'row',
-//     alignItems: 'center',
-//     backgroundColor: '#f9f9f9',
-//     padding: 12,
-//     borderRadius: 10,
-//   },
-//   colorIndicator: {
-//     width: 12,
-//     height: 40,
-//     borderRadius: 6,
-//     marginRight: 15,
-//   },
-//   territoryName: {
-//     fontSize: 16,
-//     fontWeight: '600',
-//   },
-//   territoryDetail: {
-//     fontSize: 12,
-//     color: '#999',
-//   },
-// });
-
-// export default UserDetailScreen;
-
 import React, { useState } from 'react';
 import {
   View, Text, StyleSheet, Image, ScrollView,
-  TouchableOpacity, TextInput, Alert, ActivityIndicator
+  TouchableOpacity, TextInput, Alert, ActivityIndicator, Switch
 } from 'react-native';
 
 const UserDetailScreen = ({ user, onUpdate }: { user: any, onUpdate?: (data: any) => Promise<void> }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(false);
-
-  // Estado local para los campos editables (ejemplos basados en tus tablas)
-  const [formData, setFormData] = useState({
-    firstName: user.person.firstName,
-    lastName: user.person.lastName,
+  
+  const [form, setForm] = useState({
+    first_name: user.person.first_name,
+    last_name: user.person.last_name,
     phone: user.person.phone,
-    address: user.person.address,
     email: user.email,
-    active: user.active
+    active: user.active,
   });
+
+  // Colores Corporativos
+  const corporateColor = {
+    primary: '#1e272e',    // Gris muy oscuro / Azul noche
+    secondary: '#2f3542',  // Gris pizarra
+    accent: '#0984e3',     // Azul corporativo
+    background: '#f1f2f6'
+  };
+
+  const institutionalPalette = {
+  primary: '#512DA8',    // Morado para headers o títulos
+  secondary: '#2f3542',  // Gris pizarra para textos
+  accent: '#0288D1',     // Azul para botones de acción
+  danger: '#D32F2F',     // Rojo para cancelar o eliminar
+  warning: '#FBC02D',    // Amarillo para avisos o estados
+  background: '#f1f2f6'
+};
 
   const handleSave = async () => {
     setLoading(true);
     try {
-      // Aquí llamarías a tu API o al método del contexto
-      if (onUpdate) {
-        await onUpdate(formData);
-      }
-      Alert.alert("Éxito", "Los datos han sido actualizados correctamente.");
+      if (onUpdate) await onUpdate(form);
+      Alert.alert("Éxito", "Cambios guardados en el servidor.");
       setIsEditing(false);
     } catch (error) {
-      Alert.alert("Error", "No se pudieron guardar los cambios.");
+      Alert.alert("Error", "No se pudo actualizar el registro.");
     } finally {
       setLoading(false);
     }
   };
 
-  const DetailRow = ({ label, value, field, editable = true }: any) => (
-    <View style={styles.detailRow}>
-      <Text style={styles.detailLabel}>{label}</Text>
+  const InfoRow = ({ label, value, field, editable = true }: any) => (
+    <View style={styles.row}>
+      <Text style={styles.rowLabel}>{label}</Text>
       {isEditing && editable ? (
         <TextInput
-          style={styles.input}
-          value={formData[field as keyof typeof formData]?.toString()}
-          onChangeText={(text) => setFormData({ ...formData, [field]: text })}
-          placeholder={`Ingresar ${label.toLowerCase()}`}
+          style={styles.inlineInput}
+          value={form[field as keyof typeof form]?.toString()}
+          onChangeText={(text) => setForm({ ...form, [field]: text })}
         />
       ) : (
-        <Text style={styles.detailValue}>{value || 'No registrado'}</Text>
+        <Text style={styles.rowValue}>{value || '—'}</Text>
       )}
     </View>
   );
 
   return (
-    <View style={{ flex: 1 }}>
-      <ScrollView style={styles.container} bounces={false}>
-        {/* HEADER */}
-        <View style={styles.header}>
-          <View style={[styles.photoContainer, { borderColor: user.territory.color }]}>
-            <Image
-              source={{ uri: user.person.photo || `https://ui-avatars.com/api/?name=${user.person.firstName}+${user.person.lastName}` }}
-              style={styles.photo}
-            />
-          </View>
-          <Text style={styles.fullName}>{`${formData.firstName} ${formData.lastName}`}</Text>
+    <View style={styles.container}>
+      {/* --- HEADER CORPORATIVO --- */}
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>SISTEMA DE GESTIÓN DE USUARIOS</Text>
+      </View>
 
-          {/* BOTONES DE ACCIÓN PRINCIPAL */}
-          <View style={styles.actionRow}>
+      <ScrollView style={styles.body} showsVerticalScrollIndicator={false}>
+        
+        {/* --- SECCIÓN PERFIL SERIO --- */}
+        <View style={styles.profileHeader}>
+          {/* Fondo decorativo de la tarjeta de perfil */}
+          <View style={styles.profileBackground} />
+          
+          <View style={styles.photoWrapper}>
+            <Image
+              source={require('@/assets/images/cuadrangular.png')}
+              // source={{ uri: user.person.photo || `https://ui-avatars.com/api/?name=${form.first_name}+${form.last_name}&background=2f3542&color=fff` }}
+              style={styles.bigPhoto}
+            />
+            {/* <View style={[styles.statusIndicator, { backgroundColor: form.active ? '#2ecc71' : '#95a5a6' }]} /> */}
+          </View>
+
+          <View style={styles.nameContainer}>
+            <Text style={styles.mainName}>{`${form.first_name} ${form.last_name}`.toUpperCase()}</Text>
+            <View style={styles.badgeContainer}>
+               <Text style={styles.roleBadge}>{user.user_type?.name || 'EMPLEADO'}</Text>
+               <Text style={styles.idText}>ID: {user.person.id_number || 'N/A'}</Text>
+            </View>
+          </View>
+
+          <View style={styles.actionContainer}>
             {!isEditing ? (
-              <TouchableOpacity style={styles.editBtn} onPress={() => setIsEditing(true)}>
-                <Text style={styles.btnText}>✏️ Editar Perfil</Text>
+              <TouchableOpacity style={styles.corporateEditBtn} onPress={() => setIsEditing(true)}>
+                <Text style={styles.corporateEditBtnText}>MODIFICAR REGISTRO</Text>
               </TouchableOpacity>
             ) : (
-              <>
-                <TouchableOpacity style={[styles.btn, styles.cancelBtn]} onPress={() => setIsEditing(false)}>
-                  <Text style={styles.btnText}>Cancelar</Text>
+              <View style={styles.editingGroup}>
+                <TouchableOpacity style={styles.saveBtn} onPress={handleSave}>
+                  <Text style={styles.btnTextWhite}>GUARDAR</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={[styles.btn, styles.saveBtn]} onPress={handleSave} disabled={loading}>
-                  {loading ? <ActivityIndicator color="white" /> : <Text style={styles.btnText}>Guardar</Text>}
+                <TouchableOpacity style={styles.cancelBtn} onPress={() => setIsEditing(false)}>
+                  <Text style={styles.btnTextDark}>CANCELAR</Text>
                 </TouchableOpacity>
-              </>
+              </View>
             )}
           </View>
         </View>
 
-        {/* SECCIÓN DATOS PERSONALES */}
+        {/* --- DATOS PERSONALES --- */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>👤 Datos Personales (Editables)</Text>
+          <Text style={styles.sectionLabel}>Información del Sujeto</Text>
           <View style={styles.card}>
-            <DetailRow label="Nombre" value={formData.firstName} field="firstName" />
-            <DetailRow label="Apellido" value={formData.lastName} field="lastName" />
-            <DetailRow label="Teléfono" value={formData.phone} field="phone" />
-            <DetailRow label="Dirección" value={formData.address} field="address" />
+            <InfoRow label="NOMBRES" value={form.first_name} field="first_name" />
+            <InfoRow label="APELLIDOS" value={form.last_name} field="last_name" />
+            <InfoRow label="GÉNERO" value={user.person.gender} editable={false} />
+            <InfoRow label="TELÉFONO" value={form.phone} field="phone" />
           </View>
         </View>
 
-        {/* SECCIÓN CUENTA */}
+        {/* --- DATOS DE CUENTA --- */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>🔑 Información de Cuenta</Text>
-          <View style={styles.card}>
-            <DetailRow label="Email" value={formData.email} field="email" />
-            <DetailRow label="Usuario" value={`@${user.username}`} editable={false} />
-            <DetailRow label="Territorio" value={user.territory.name} editable={false} />
+          <Text style={styles.sectionLabel}>Credenciales y Sistema</Text>
+          <View style={[styles.card, styles.cardEnterprise]}>
+            <InfoRow label="EMAIL CORPORATIVO" value={form.email} field="email" />
+            <InfoRow label="USUARIO" value={user.username} editable={false} />
+            <InfoRow label="TERRITORIO ASIGNADO" value={user.territory?.name} editable={false} />
+            <InfoRow label="ALTA EN SISTEMA" value={new Date(user.created_at).toLocaleDateString()} editable={false} />
+            
+            <View style={styles.switchRow}>
+              <Text style={styles.rowLabel}>ESTADO DEL ACCESO</Text>
+              <Switch
+                value={form.active}
+                onValueChange={(v) => setForm({ ...form, active: v })}
+                disabled={!isEditing}
+                trackColor={{ false: "#dfe6e9", true: "#2f3542" }}
+                thumbColor={form.active ? "#0288D1" : "#f4f3f4"}
+              />
+            </View>
           </View>
         </View>
+
         <View style={{ height: 50 }} />
       </ScrollView>
     </View>
@@ -290,31 +150,85 @@ const UserDetailScreen = ({ user, onUpdate }: { user: any, onUpdate?: (data: any
 };
 
 const styles = StyleSheet.create({
-  container: { 
-    flex: 1, 
-    backgroundColor: '#F8F9FA' 
+  container: { flex: 1, backgroundColor: '#f1f2f6' },
+  header: {
+    paddingVertical: 15,
+    backgroundColor: '#512DA8',
+    alignItems: 'center',
   },
-  header: { backgroundColor: '#FFF', alignItems: 'center', paddingVertical: 20, borderBottomLeftRadius: 30, borderBottomRightRadius: 30, elevation: 4 },
-  photoContainer: { width: 110, height: 110, borderRadius: 55, borderWidth: 3, padding: 2, marginBottom: 10 },
-  photo: { width: '100%', height: '100%', borderRadius: 55 },
-  fullName: { fontSize: 20, fontWeight: 'bold', color: '#2D3436' },
-  actionRow: { flexDirection: 'row', marginTop: 15, gap: 10 },
-  btn: { paddingHorizontal: 20, paddingVertical: 10, borderRadius: 10, minWidth: 100, alignItems: 'center' },
-  editBtn: { backgroundColor: '#3498db', paddingHorizontal: 25, paddingVertical: 10, borderRadius: 20 },
-  saveBtn: { backgroundColor: '#2ecc71' },
-  cancelBtn: { backgroundColor: '#e74c3c' },
-  btnText: { color: 'white', fontWeight: 'bold' },
-  section: { paddingHorizontal: 20, marginTop: 20 },
-  sectionTitle: { fontSize: 13, fontWeight: 'bold', color: '#636E72', marginBottom: 8, textTransform: 'uppercase' },
-  card: { backgroundColor: '#FFF', borderRadius: 15, padding: 15, shadowOpacity: 0.05 },
-  detailRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: '#F1F2F6' },
-  detailLabel: { fontSize: 13, color: '#B2BEC3', flex: 1 },
-  detailValue: { fontSize: 14, color: '#2D3436', fontWeight: '600', flex: 2, textAlign: 'right' },
-  input: { 
-    flex: 2, 
-    backgroundColor: '#f9f9f9', padding: 8, borderRadius: 5, textAlign: 'right', 
-    // borderWeight: 1, 
-    borderColor: '#ddd', color: '#3498db', fontWeight: 'bold' }
+  headerTitle: { fontSize: 12, fontWeight: 'bold', color: '#fff', letterSpacing: 2 },
+  body: { padding: 20 },
+  
+  // Perfil Empresarial
+  profileHeader: { 
+    backgroundColor: '#fff', 
+    borderRadius: 12, 
+    paddingBottom: 25, 
+    alignItems: 'center',
+    overflow: 'hidden',
+    elevation: 3,
+    marginBottom: 25,
+    borderWidth: 1,
+    borderColor: '#dcdde1'
+  },
+  profileBackground: {
+    height: 80,
+    width: '100%',
+    backgroundColor: '#2f3542', // Fondo oscuro serio
+    position: 'absolute',
+    top: 0,
+  },
+  photoWrapper: {
+    marginTop: 25,
+    position: 'relative',
+  },
+  bigPhoto: { 
+    width: 120, 
+    height: 120, 
+    borderRadius: 60, // Menos circular, más cuadrado redondeado (tipo LinkedIn)
+    borderWidth: 4, 
+    borderColor: '#fff',
+    backgroundColor: '#f1f2f6'
+  },
+  statusIndicator: {
+    position: 'absolute',
+    bottom: -5,
+    right: -5,
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    borderWidth: 3,
+    borderColor: '#fff'
+  },
+  nameContainer: { alignItems: 'center', marginTop: 10 },
+  mainName: { fontSize: 18, fontWeight: '800', color: '#512DA8', letterSpacing: 0.5 },
+  badgeContainer: { flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: 5 },
+  roleBadge: { backgroundColor: '#f1f2f6', color: '#2f3542', fontSize: 10, fontWeight: 'bold', paddingHorizontal: 10, paddingVertical: 4, borderRadius: 4, borderWidth: 1, borderColor: '#dcdde1' },
+  idText: { fontSize: 11, color: '#7f8c8d', fontWeight: '500' },
+  
+  // Botones Empresa
+  actionContainer: { width: '80%', marginTop: 20 },
+  corporateEditBtn: { backgroundColor: '#512DA8', paddingVertical: 12, borderRadius: 6, alignItems: 'center' },
+  corporateEditBtnText: { color: '#fff', fontSize: 11, fontWeight: 'bold', letterSpacing: 1 },
+  editingGroup: { flexDirection: 'row', gap: 10 },
+  saveBtn: { flex: 1, backgroundColor: '#0288D1', paddingVertical: 12, borderRadius: 6, alignItems: 'center' },
+  cancelBtn: { flex: 1, backgroundColor: '#f1f2f6', paddingVertical: 12, borderRadius: 6, alignItems: 'center', borderWidth: 1, borderColor: '#dcdde1' },
+  btnTextWhite: { color: '#fff', fontWeight: 'bold', fontSize: 11 },
+  btnTextDark: { color: '#2f3542', fontWeight: 'bold', fontSize: 11 },
+
+  // Secciones
+  section: { marginBottom: 25 },
+  sectionLabel: { fontSize: 11, fontWeight: 'bold', color: '#7f8c8d', textTransform: 'uppercase', marginBottom: 8, letterSpacing: 1 },
+  
+  card: { backgroundColor: '#fff', borderRadius: 8, paddingHorizontal: 15, paddingVertical: 5, elevation: 1, borderWidth: 1, borderColor: '#dcdde1' },
+  cardEnterprise: { borderTopWidth: 3, borderTopColor: '#0288D1' },
+  
+  row: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 15, borderBottomWidth: 1, borderBottomColor: '#f1f2f6' },
+  rowLabel: { color: '#7f8c8d', fontSize: 11, fontWeight: '700' },
+  rowValue: { fontWeight: '600', color: '#2f3542', fontSize: 13, flex: 1, textAlign: 'right' },
+  
+  inlineInput: { fontWeight: '700', color: '#0288D1', fontSize: 13, flex: 1, textAlign: 'right', backgroundColor: '#f8f9fa', padding: 5, borderRadius: 4, borderWidth: 1, borderColor: '#dcdde1' },
+  switchRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 12 }
 });
 
 export default UserDetailScreen;
